@@ -9,6 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TciEnergy.Blazor.Client", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TciEnergy.Blazor.Shared", "Shared\TciEnergy.Blazor.Shared.csproj", "{BEEEBD7D-438E-4226-9628-B98F3A2466D3}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AliaaCommonStandard", "..\..\AliaaCommon\AliaaCommonStandard\AliaaCommonStandard.csproj", "{AF6DEDFE-FFFB-49B4-9249-CC549B78A833}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyMongoNet.Definitions", "..\..\EasyMongoNet\Definitions\EasyMongoNet.Definitions.csproj", "{449E523C-5508-4671-A23E-1974123768D1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyMongoNet.Driver2", "..\..\EasyMongoNet\Driver2\EasyMongoNet.Driver2.csproj", "{8A3DB62D-B52F-4CE6-B397-18E842C43D1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +33,18 @@ Global
 		{BEEEBD7D-438E-4226-9628-B98F3A2466D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEEEBD7D-438E-4226-9628-B98F3A2466D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEEEBD7D-438E-4226-9628-B98F3A2466D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF6DEDFE-FFFB-49B4-9249-CC549B78A833}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF6DEDFE-FFFB-49B4-9249-CC549B78A833}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF6DEDFE-FFFB-49B4-9249-CC549B78A833}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF6DEDFE-FFFB-49B4-9249-CC549B78A833}.Release|Any CPU.Build.0 = Release|Any CPU
+		{449E523C-5508-4671-A23E-1974123768D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{449E523C-5508-4671-A23E-1974123768D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{449E523C-5508-4671-A23E-1974123768D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{449E523C-5508-4671-A23E-1974123768D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A3DB62D-B52F-4CE6-B397-18E842C43D1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A3DB62D-B52F-4CE6-B397-18E842C43D1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A3DB62D-B52F-4CE6-B397-18E842C43D1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A3DB62D-B52F-4CE6-B397-18E842C43D1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
