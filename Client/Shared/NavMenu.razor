@@ -1,37 +1,88 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">TciEnergy.Blazor</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</div>
+﻿@inject AuthenticationStateProvider _auth
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </li>
-    </ul>
-</div>
+<nav class="navbar navbar-expand-md navbar-toggleable-lg navbar-dark bg-dark border-bottom">
+    <div class="container-fluid flex-wrap">
+        <a class="navbar-brand" href="">سامانه مدیریت انرژی مخابرات</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse d-lg-inline-flex">
+            <ul class="navbar-nav w-100 flex-wrap">
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="dashboard">داشبورد</NavLink>
+                </li>
+
+                <li Class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">مشترکین</a>
+                    <div class="dropdown-menu">
+                        <NavLink class="dropdown-item" href="subscribersList">لیست مشترکین</NavLink>
+                        <AuthorizeView Context="a" Policy="@nameof(Permission.ChangeSubscribers)">
+                            <NavLink class="dropdown-item" href="newSubscriber">مشترک جدید</NavLink>
+                        </AuthorizeView>
+                    </div>
+                </li>
+
+                <li Class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">لیست قبوض</a>
+                    <div class="dropdown-menu">
+                        <NavLink class="dropdown-item" href="elecBillsList">قبوض برق</NavLink>
+                    </div>
+                </li>
+
+                <AuthorizeView Policy="@nameof(Permission.ImportBills)">
+                    <li Class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">وارد سازی قبوض</a>
+                        <div class="dropdown-menu">
+                            <NavLink class="dropdown-item" href="elecBillsImport">قبوض برق</NavLink>
+                        </div>
+                    </li>
+                </AuthorizeView>
+
+                <li Class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">گزارشها</a>
+                    <div class="dropdown-menu">
+                        <NavLink class="dropdown-item" href="reports/total">کلی</NavLink>
+                        <NavLink class="dropdown-item" href="reports/subscribers">مشترکین</NavLink>
+                    </div>
+                </li>
+
+                <AuthorizeView Policy="@nameof(Permission.ManageUsers)">
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="user/manage">مدیریت کاربران</NavLink>
+                    </li>
+                </AuthorizeView>
+                <AuthorizeView>
+                    <Authorized>
+                        <li class="nav-item mr-auto">
+                            <NavLink class="nav-link" href="login/out">خروج</NavLink>
+                        </li>
+                        @if (user != null)
+                        {
+                            <li class="nav-item mr-auto">
+                                <NavLink class="nav-link" href="user/settings">@user.DisplayName</NavLink>
+                            </li>
+                        }
+                    </Authorized>
+                    <NotAuthorized>
+                        <li class="nav-item mr-auto">
+                            <NavLink class="nav-link" href="login">ورود</NavLink>
+                        </li>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </ul>
+        </div>
+    </div>
+</nav>
 
 @code {
-    private bool collapseNavMenu = true;
+    private AuthStateProvider auth;
+    private BaseAuthUser user;
 
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
+    protected override async Task OnInitializedAsync()
     {
-        collapseNavMenu = !collapseNavMenu;
+        await base.OnInitializedAsync();
+        auth = (AuthStateProvider)_auth;
+        user = await auth.GetUser();
     }
 }

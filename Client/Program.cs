@@ -1,12 +1,14 @@
 using System;
-using System.Net.Http;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Text;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
+using TciEnergy.Blazor.Shared;
+using Blazored.Modal;
+using Microsoft.AspNetCore.Components;
+using Blazored.Toast;
+using Microsoft.JSInterop;
 
 namespace TciEnergy.Blazor.Client
 {
@@ -17,7 +19,25 @@ namespace TciEnergy.Blazor.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddBlazoredLocalStorage();
+            builder.Services.AddBlazoredToast();
+
+            var address = new Uri(new Uri(builder.HostEnvironment.BaseAddress), "/api/");
+            builder.Services.AddTransient(sp => new HttpClientX(sp.GetService<NavigationManager>(), sp.GetService<IJSRuntime>())
+            { BaseAddress = address });
+            builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
+            builder.Services.AddOptions();
+            builder.Services.AddAuthorizationCore(options =>
+            {
+                foreach (string perm in Enum.GetNames(typeof(Permission)))
+                    options.AddPolicy(perm, policy => policy.RequireAssertion(context =>
+                    {
+                        var permClaim = context.User.FindFirst(nameof(Permission));
+                        return permClaim != null && permClaim.Value.Contains(perm);
+                    }));
+                options.AddPolicy("Admin", policy => policy.RequireClaim("IsAdmin", "true"));
+            });
+            builder.Services.AddBlazoredModal();
 
             await builder.Build().RunAsync();
         }

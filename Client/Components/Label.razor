@@ -1,0 +1,29 @@
+﻿@using System.Reflection
+@using System.Linq.Expressions;
+
+<label for="@memberName">@displayName @ChildContent</label>
+
+@code {
+    [Parameter]
+    public Expression<Func<object>> For { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    private string displayName;
+    private string memberName;
+
+    protected override void OnInitialized()
+    {
+        MemberInfo memberInfo;
+        if (For.Body is MemberExpression)
+            memberInfo = ((MemberExpression)For.Body).Member;
+        else if (For.Body is UnaryExpression)
+            memberInfo = ((For.Body as UnaryExpression).Operand as MemberExpression).Member;
+        else
+            throw new NotImplementedException();
+        memberName = memberInfo.Name;
+        displayName = UtilsX.DisplayName(memberInfo);
+    }
+
+}

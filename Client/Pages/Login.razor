@@ -1,0 +1,71 @@
+﻿@page "/login"
+@page "/login/{state}"
+@inject AuthenticationStateProvider _auth
+@inject NavigationManager nav
+@inject HttpClientX http
+
+<div class="container mt-4">
+    <h3>ورود</h3>
+    <EditForm Model="model" OnValidSubmit="CheckLogin">
+        <DataAnnotationsValidator />
+        <div class="row mt-5">
+            <div class="col-lg-3 col-sm-6">
+                <div class="form-group">
+                    <Label For="@(()=> model.Username)" />
+                    <InputText type="text" @bind-Value="model.Username" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <Label For="@(() => model.Password)" />
+                    <InputText type="password" @bind-Value="model.Password" class="form-control" />
+                </div>
+                @if (provinces == null)
+                {
+                    <Loading />
+                }
+                else
+                {
+                    <div class="form-group">
+                        <Label For="@(() => model.Province)" />
+                        <InputSelect @bind-Value="model.Province" class="form-control">
+                            <option selected disabled>انتخاب کنید</option>
+                            @foreach (var p in provinces)
+                                {
+                                <option value="@p.Value">@p.Text</option>
+                                }
+                        </InputSelect>
+                    </div>
+                    <ValidationSummary />
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-primary" value="ورود" />
+                    </div>
+                }
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter]
+    public string state { get; set; }
+    private LoginVM model = new LoginVM();
+    private List<TextValue> provinces = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        provinces = await http.GetFromJsonAsync<List<TextValue>>("Place/ProvinceList");
+        if (state == "out")
+        {
+            var auth = (AuthStateProvider)_auth;
+            await auth.Logout();
+        }
+    }
+
+    private async Task CheckLogin(EditContext editContext)
+    {
+        var auth = (AuthStateProvider)_auth;
+        if (await auth.Login(model))
+        {
+            nav.NavigateTo("/");
+        }
+    }
+}

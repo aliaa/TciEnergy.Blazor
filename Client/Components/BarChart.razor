@@ -1,0 +1,87 @@
+﻿@using ChartJs.Blazor.ChartJS.BarChart
+@using ChartJs.Blazor.ChartJS.Common.Axes
+@using ChartJs.Blazor.ChartJS.Common.Axes.Ticks
+@using ChartJs.Blazor.ChartJS.Common.Enums
+@using ChartJs.Blazor.ChartJS.Common.Properties
+@using ChartJs.Blazor.ChartJS.Common.Wrappers
+@using ChartJs.Blazor.Charts
+@using ChartJs.Blazor.ChartJS.Common.Handlers.OnClickHandler
+@using ChartJs.Blazor.ChartJS.Common.Handlers 
+
+@inject NavigationManager nav
+
+<ChartJsBarChart @ref="chart" Config="@config" Width="800" Height="@height" />
+
+@code {
+    [Parameter]
+    public List<ChartItem> Data { get; set; }
+    private int height = 400;
+
+    public class ChartItem
+    {
+        public string Text { get; set; }
+        public double Value { get; set; }
+        public string ClickLink { get; set; }
+        public string Color { get; set; }
+    }
+
+    private BarConfig config;
+    private ChartJsBarChart chart;
+    private BarDataset<DoubleWrapper> dataset;
+
+    protected override void OnInitialized()
+    {
+        config = new BarConfig(ChartType.HorizontalBar)
+        {
+            Options = new BarOptions
+            {
+                Responsive = true,
+                OnClick = new DotNetInstanceClickHandler(OnClickHandler),
+                Scales = new BarScales
+                {
+                    XAxes = new List<CartesianAxis>
+                {
+                        new LinearCartesianAxis
+                        {
+                            Ticks = new LinearCartesianTicks
+                            {
+                                AutoSkip = false,
+                                Min = 0 // Otherwise the lowest value in the dataset won't be visible
+                            }
+                        }
+                    }
+                },
+                Animation = new ArcAnimation
+                {
+                    AnimateRotate = true,
+                    AnimateScale = true
+                },
+                Legend = new Legend
+                {
+                    Display = false
+                }
+            }
+        };
+
+        config.Data.Labels.AddRange(Data.Select(i => i.Text));
+
+        dataset = new BarDataset<DoubleWrapper>(ChartType.HorizontalBar)
+        {
+            BackgroundColor = Data.Select(i => i.Color).ToArray()
+        };
+        dataset.AddRange(Data.Select(i => i.Value).Wrap());
+        config.Data.Datasets.Add(dataset);
+
+        height = Math.Max(400, Data.Count * 15);
+    }
+
+    [JSInvokable]
+    public void OnClickHandler(object sender, object args)
+    {
+        var clickData = (System.Text.Json.JsonElement)args;
+        int index = clickData.EnumerateArray().First().GetProperty("_index").GetInt32();
+        var link = Data[index].ClickLink;
+        if (link != null)
+            nav.NavigateTo(link);
+    }
+}
