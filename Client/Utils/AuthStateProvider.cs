@@ -65,28 +65,33 @@ namespace TciEnergy.Blazor.Client
             return new AuthenticationState(await GetClaims());
         }
 
-        public async Task<bool> Login(LoginVM m)
+        public async Task<ClientAuthUser> Login(LoginVM m)
         {
             try
             {
                 var user = await httpClient.PostAsJsonAsync<LoginVM, ClientAuthUser>("Account/Login", m);
-                if (user == null)
-                    return false;
-                await storage.SetItemAsync("user", user);
-                NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
-                return true;
+                if (user != null)
+                {
+                    await storage.SetItemAsync("user", user);
+                    NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+                }
+                return user;
             }
             catch
             {
-                return false;
+                return null;
             }
         }
 
         public async Task Logout()
         {
+            var existingUser = await GetUser();
+            if(existingUser != null)
+            {
+                await storage.RemoveItemAsync("user");
+                NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+            }
             await httpClient.GetAsync("Account/Logout");
-            await storage.RemoveItemAsync("user");
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
     }
 }

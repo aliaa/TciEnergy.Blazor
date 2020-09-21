@@ -1,0 +1,18 @@
+﻿@inject AuthenticationStateProvider _auth
+
+@if(user != null)
+{
+    @user.DisplayName
+}
+
+
+@code {
+    private ClientAuthUser user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var auth = (AuthStateProvider)_auth;
+        user = await auth.GetUser();
+    }
+}

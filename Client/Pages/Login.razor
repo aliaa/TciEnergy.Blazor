@@ -63,7 +63,8 @@
     private async Task CheckLogin(EditContext editContext)
     {
         var auth = (AuthStateProvider)_auth;
-        if (await auth.Login(model))
+        var user = await auth.Login(model);
+        if (user != null)
         {
             nav.NavigateTo("/");
         }

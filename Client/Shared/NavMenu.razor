@@ -1,6 +1,4 @@
-﻿@inject AuthenticationStateProvider _auth
-
-<nav class="navbar navbar-expand-md navbar-toggleable-lg navbar-dark bg-dark border-bottom">
+﻿<nav class="navbar navbar-expand-md navbar-toggleable-lg navbar-dark bg-dark border-bottom">
     <div class="container-fluid flex-wrap">
         <a class="navbar-brand" href="">سامانه مدیریت انرژی مخابرات</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -56,15 +54,12 @@
                 </AuthorizeView>
                 <AuthorizeView>
                     <Authorized>
-                        @if (user != null)
-                        {
-                            <li class="nav-item mr-auto">
-                                <NavLink class="nav-link" href="user/settings">@user.DisplayName</NavLink>
-                            </li>
-                            <li class="nav-item">
-                                <NavLink class="nav-link" href="login/out">خروج</NavLink>
-                            </li>
-                        }
+                        <li class="nav-item mr-auto">
+                            <NavLink class="nav-link" href="user/settings"><UserDisplayName /></NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="login/out">خروج</NavLink>
+                        </li>
                     </Authorized>
                     <NotAuthorized>
                         <li class="nav-item mr-auto">
@@ -76,14 +71,3 @@
         </div>
     </div>
 </nav>
-
-@code {
-    private ClientAuthUser user;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        var auth = (AuthStateProvider)_auth;
-        user = await auth.GetUser();
-    }
-}

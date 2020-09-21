@@ -1,4 +1,5 @@
 ﻿@page "/user/manage"
+@attribute [Authorize(nameof(Permission.ManageUsers))]
 
 <h3>ManageUsers</h3>
 
