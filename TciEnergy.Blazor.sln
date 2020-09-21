@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TciEnergy.Blazor.Server", "Server\TciEnergy.Blazor.Server.csproj", "{FCFCE026-8E10-4DF5-B7CC-EF63A950A85E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TciEnergy.Blazor.Server", "Server\TciEnergy.Blazor.Server.csproj", "{FCFCE026-8E10-4DF5-B7CC-EF63A950A85E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TciEnergy.Blazor.Client", "Client\TciEnergy.Blazor.Client.csproj", "{87F3695E-DFBC-4634-B34B-58ED45272697}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TciEnergy.Blazor.Client", "Client\TciEnergy.Blazor.Client.csproj", "{87F3695E-DFBC-4634-B34B-58ED45272697}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TciEnergy.Blazor.Shared", "Shared\TciEnergy.Blazor.Shared.csproj", "{BEEEBD7D-438E-4226-9628-B98F3A2466D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TciEnergy.Blazor.Shared", "Shared\TciEnergy.Blazor.Shared.csproj", "{BEEEBD7D-438E-4226-9628-B98F3A2466D3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AliaaCommonStandard", "..\..\AliaaCommon\AliaaCommonStandard\AliaaCommonStandard.csproj", "{AF6DEDFE-FFFB-49B4-9249-CC549B78A833}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyMongoNet.Definitions", "..\..\EasyMongoNet\Definitions\EasyMongoNet.Definitions.csproj", "{449E523C-5508-4671-A23E-1974123768D1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyMongoNet.Driver2", "..\..\EasyMongoNet\Driver2\EasyMongoNet.Driver2.csproj", "{8A3DB62D-B52F-4CE6-B397-18E842C43D1B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TciCommon.Models", "..\TciCommon\TciCommon.Models\TciCommon.Models.csproj", "{63833185-4156-4011-A9D9-ED0D88775AE3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{8A3DB62D-B52F-4CE6-B397-18E842C43D1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A3DB62D-B52F-4CE6-B397-18E842C43D1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A3DB62D-B52F-4CE6-B397-18E842C43D1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63833185-4156-4011-A9D9-ED0D88775AE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63833185-4156-4011-A9D9-ED0D88775AE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63833185-4156-4011-A9D9-ED0D88775AE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63833185-4156-4011-A9D9-ED0D88775AE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

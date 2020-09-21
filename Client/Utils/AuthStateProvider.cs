@@ -22,9 +22,9 @@ namespace TciEnergy.Blazor.Client
             this.storage = storage;
         }
 
-        public async Task<BaseAuthUser> GetUser()
+        public async Task<ClientAuthUser> GetUser()
         {
-            return await storage.GetItemAsync<BaseAuthUser>("user");
+            return await storage.GetItemAsync<ClientAuthUser>("user");
         }
 
         private async Task<ClaimsPrincipal> GetClaims()
@@ -69,7 +69,7 @@ namespace TciEnergy.Blazor.Client
         {
             try
             {
-                var user = await httpClient.PostAsJsonAsync<LoginVM, BaseAuthUser>("Account/Login", m);
+                var user = await httpClient.PostAsJsonAsync<LoginVM, ClientAuthUser>("Account/Login", m);
                 if (user == null)
                     return false;
                 await storage.SetItemAsync("user", user);

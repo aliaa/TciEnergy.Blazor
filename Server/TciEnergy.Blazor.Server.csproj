@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>f80f89a0-b680-4ab8-b30c-5dafd0e5c80a</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +15,7 @@
     <ProjectReference Include="..\..\..\AliaaCommon\AliaaCommonStandard\AliaaCommonStandard.csproj" />
     <ProjectReference Include="..\..\..\EasyMongoNet\Definitions\EasyMongoNet.Definitions.csproj" />
     <ProjectReference Include="..\..\..\EasyMongoNet\Driver2\EasyMongoNet.Driver2.csproj" />
+    <ProjectReference Include="..\..\TciCommon\TciCommon.Models\TciCommon.Models.csproj" />
     <ProjectReference Include="..\Client\TciEnergy.Blazor.Client.csproj" />
     <ProjectReference Include="..\Shared\TciEnergy.Blazor.Shared.csproj" />
   </ItemGroup>

@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\TciCommon\TciCommon.Models\TciCommon.Models.csproj" />
     <ProjectReference Include="..\Shared\TciEnergy.Blazor.Shared.csproj" />
   </ItemGroup>
 

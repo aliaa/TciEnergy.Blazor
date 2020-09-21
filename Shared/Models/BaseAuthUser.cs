@@ -1,11 +1,10 @@
 ﻿using EasyMongoNet;
-using MongoDB.Bson;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace TciEnergy.Blazor.Shared.Models
 {
-    public class BaseAuthUser : MongoEntity
+    public abstract class BaseAuthUser : MongoEntity
     {
         [Required]
         [Display(Name = "نام کاربری")]
@@ -31,7 +30,6 @@ namespace TciEnergy.Blazor.Shared.Models
         }
 
         public List<Permission> Permissions { get; set; } = new List<Permission>();
-        public List<ObjectId> Cities { get; set; } = new List<ObjectId>();
 
         public bool HasPermission(Permission perm)
         {

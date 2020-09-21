@@ -13,6 +13,8 @@ using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
 using System.Text.Unicode;
 using System.Threading.Tasks;
+using TciCommon.Models;
+using TciEnergy.Blazor.Server.Models;
 using TciEnergy.Blazor.Shared;
 
 namespace TciEnergy.Blazor.Server.Configuration
@@ -70,7 +72,13 @@ namespace TciEnergy.Blazor.Server.Configuration
             // configure db:
             var defaultConnection = Configuration.GetSection("DefaultConnection").Get<MongoConnectionSettings>();
             var customConnections = Configuration.GetSection("CustomConnections").Get<MongoConnectionSettings[]>();
-            services.FindModelsAndAddMongoCollections(new Assembly[] { Assembly.GetAssembly(typeof(Permission)) }, defaultConnection, customConnections);
+            services.FindModelsAndAddMongoCollections(new Assembly[] 
+            { 
+                typeof(Permission).Assembly,
+                typeof(Province).Assembly,
+                typeof(AuthUserX).Assembly
+
+            }, defaultConnection, customConnections);
 
             //services.AddSingleton(sp => new DataTableFactory(sp.GetService<IReadOnlyDbContext>()));
 
