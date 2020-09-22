@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using TciCommon.Models;
+using TciCommon.ServerUtils;
 using TciEnergy.Blazor.Shared.ViewModels;
 
 namespace TciEnergy.Blazor.Server.Controllers
@@ -14,16 +12,12 @@ namespace TciEnergy.Blazor.Server.Controllers
     [ApiController]
     public class PlaceController : BaseController
     {
-        private readonly IMongoCollection<Province> provinceCol;
 
-        public PlaceController(IMongoCollection<Province> provinceCol)
-        {
-            this.provinceCol = provinceCol;
-        }
+        public PlaceController(ProvinceDBs dbs) : base(dbs) { }
 
-        public async Task<ActionResult<List<TextValue>>> ProvinceList()
+        public ActionResult<List<TextValue>> ProvinceList()
         {
-            return (await provinceCol.Find(_ => true).SortBy(p => p.Name).ToCursorAsync())
+            return db.Find<Province>(_ => true).SortBy(p => p.Name)
                 .ToEnumerable().Select(p => new TextValue { Text = p.Name, Value = p.Prefix }).ToList();
         }
     }

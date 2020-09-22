@@ -13,9 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AliaaCommonStandard", "..\.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyMongoNet.Definitions", "..\..\EasyMongoNet\Definitions\EasyMongoNet.Definitions.csproj", "{449E523C-5508-4671-A23E-1974123768D1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyMongoNet.Driver2", "..\..\EasyMongoNet\Driver2\EasyMongoNet.Driver2.csproj", "{8A3DB62D-B52F-4CE6-B397-18E842C43D1B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TciCommon.Models", "..\TciCommon\TciCommon.Models\TciCommon.Models.csproj", "{63833185-4156-4011-A9D9-ED0D88775AE3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyMongoNet.Driver", "..\..\EasyMongoNet\Driver\EasyMongoNet.Driver.csproj", "{40BE4B07-6C39-4826-98DF-66C13D86991D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TciCommon.ServerUtils", "..\TciCommon\TciCommon.ServerUtils\TciCommon.ServerUtils.csproj", "{6AF03C0B-E993-4ED8-8BCD-32DF53568533}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,14 +45,18 @@ Global
 		{449E523C-5508-4671-A23E-1974123768D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{449E523C-5508-4671-A23E-1974123768D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{449E523C-5508-4671-A23E-1974123768D1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8A3DB62D-B52F-4CE6-B397-18E842C43D1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A3DB62D-B52F-4CE6-B397-18E842C43D1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A3DB62D-B52F-4CE6-B397-18E842C43D1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A3DB62D-B52F-4CE6-B397-18E842C43D1B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{63833185-4156-4011-A9D9-ED0D88775AE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{63833185-4156-4011-A9D9-ED0D88775AE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63833185-4156-4011-A9D9-ED0D88775AE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63833185-4156-4011-A9D9-ED0D88775AE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40BE4B07-6C39-4826-98DF-66C13D86991D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40BE4B07-6C39-4826-98DF-66C13D86991D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40BE4B07-6C39-4826-98DF-66C13D86991D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40BE4B07-6C39-4826-98DF-66C13D86991D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AF03C0B-E993-4ED8-8BCD-32DF53568533}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AF03C0B-E993-4ED8-8BCD-32DF53568533}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AF03C0B-E993-4ED8-8BCD-32DF53568533}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AF03C0B-E993-4ED8-8BCD-32DF53568533}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,9 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TciCommon.Models;
-using EasyMongoNet.Driver2;
-using MongoDB.Driver;
 using TciEnergy.Blazor.Shared.Models;
+using TciCommon.ServerUtils;
 
 namespace TciEnergy.Blazor.Server.Controllers
 {
@@ -13,26 +12,15 @@ namespace TciEnergy.Blazor.Server.Controllers
     [Authorize]
     public class DashboardController : BaseController
     {
-        private readonly IMongoCollection<City> citiesCol;
-        private readonly IMongoCollection<Settings> settingsCol;
-
-        public DashboardController(IMongoCollection<City> citiesCol, IMongoCollection<Settings> settingsCol)
-        {
-            this.citiesCol = citiesCol;
-            this.settingsCol = settingsCol;
-        }
+        public DashboardController(ProvinceDBs dbs) : base(dbs) { }
 
         [HttpGet]
-        public async Task<ActionResult<City>> MainCity()
+        public ActionResult<City> MainCity()
         {
-            var mainCitySettings = await settingsCol.FindFirstAsync(s => s.Key == "MainCity");
-            return await citiesCol.FindByIdAsync(mainCitySettings.Value);
+            var mainCitySettings = db.FindFirst<Settings>(s => s.Key == "MainCity");
+            return db.FindById<City>(mainCitySettings.Value);
         }
 
-        [HttpGet]
-        public async Task<string[,]> TotalElecBillInfoTable()
-        {
-
-        }
+        
     }
 }

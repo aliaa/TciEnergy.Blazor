@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AliaaCommon.Models;
@@ -11,14 +10,13 @@ using TciEnergy.Blazor.Shared.Models;
 using TciEnergy.Blazor.Shared.ViewModels;
 using TciEnergy.Blazor.Server.Utils;
 using System.Security.Claims;
-using TciCommon.Models;
 using System.Text;
 using TciEnergy.Blazor.Shared;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Omu.ValueInjecter;
 using Microsoft.AspNetCore.Authorization;
-using EasyMongoNet.Driver2;
+using TciCommon.ServerUtils;
 
 namespace TciEnergy.Blazor.Server.Controllers
 {
@@ -26,14 +24,7 @@ namespace TciEnergy.Blazor.Server.Controllers
     [ApiController]
     public class AccountController : BaseController
     {
-        private readonly IMongoCollection<AuthUserX> userCol;
-        private readonly IMongoCollection<LoginLog> loginLogCol;
-
-        public AccountController(IMongoCollection<AuthUserX> userCol, IMongoCollection<LoginLog> loginLogCol)
-        {
-            this.userCol = userCol;
-            this.loginLogCol = loginLogCol;
-        }
+        public AccountController(ProvinceDBs dbs) : base(dbs) { }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -41,7 +32,7 @@ namespace TciEnergy.Blazor.Server.Controllers
         {
             if (model == null)
                 return Unauthorized();
-            var user = await userCol.CheckAuthentication(loginLogCol, model.Username, model.Password);
+            var user = db.CheckAuthentication(model.Username, model.Password);
             if (user != null)
             {
                 var claims = new List<Claim>
@@ -81,9 +72,9 @@ namespace TciEnergy.Blazor.Server.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> ChangePassword(ChangePasswordVM model)
+        public IActionResult ChangePassword(ChangePasswordVM model)
         {
-            var user = await userCol.FindFirstAsync(u => u.Id == UserId.Value);
+            var user = db.FindFirst<AuthUserX>(u => u.Id == UserId.Value);
             if (user != null)
             {
                 if (AuthUserDBExtention.GetHash(model.CurrentPassword) == user.HashedPassword)
@@ -91,7 +82,7 @@ namespace TciEnergy.Blazor.Server.Controllers
                     if (model.NewPassword == model.RepeatNewPassword)
                     {
                         user.Password = model.NewPassword;
-                        await userCol.InsertOneAsync(user); // TODO save loggs
+                        db.Save(user);
                         return Ok();
                     }
                     else
@@ -105,37 +96,37 @@ namespace TciEnergy.Blazor.Server.Controllers
 
         [Authorize(nameof(Permission.ManageUsers))]
         [HttpPost]
-        public async Task<IActionResult> Add(NewUserVM user)
+        public IActionResult Add(NewUserVM user)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            if (await userCol.AnyAsync(u => u.Username == user.Username))
+            if (db.Any<AuthUserX>(u => u.Username == user.Username))
                 return BadRequest(new Dictionary<string, List<string>> { { nameof(NewUserVM.Username), new List<string> { "نام کاربری قبلا موجود است!" } } });
             var authUser = Mapper.Map<AuthUserX>(user);
-            await userCol.InsertOneAsync(authUser);
+            db.Save(authUser);
             return Ok();
         }
 
         [Authorize(nameof(Permission.ManageUsers))]
-        public async Task<ActionResult<List<ClientAuthUser>>> List()
+        public ActionResult<List<ClientAuthUser>> List()
         {
-            return (await userCol.Find(_ => true).SortBy(u => u.LastName).ThenBy(u => u.FirstName)
+            return db.Find<AuthUserX>(_ => true).SortBy(u => u.LastName).ThenBy(u => u.FirstName)
                 .Project(Builders<AuthUserX>.Projection.Exclude(u => u.HashedPassword)).As<AuthUserX>()
-                .ToCursorAsync()).ToEnumerable().Select(u => Mapper.Map<ClientAuthUser>(u)).ToList();
+                .ToEnumerable().Select(u => Mapper.Map<ClientAuthUser>(u)).ToList();
         }
 
         [Authorize(nameof(Permission.ManageUsers))]
         [HttpPost]
-        public async Task<IActionResult> Save(ClientAuthUser user)
+        public IActionResult Save(ClientAuthUser user)
         {
             if (!ModelState.IsValid)
                 return BadRequest("اطلاعات کاربری نامعتبر است!");
-            var existing = await userCol.FindByIdAsync(user.Id);
+            var existing = db.FindById<AuthUserX>(user.Id);
             if (existing == null)
                 return BadRequest("کاربر یافت نشد!");
             existing.InjectFrom(user);
-            await userCol.InsertOneAsync(existing); //TODO: write log
+            db.Save(existing);
             return Ok();
         }
     }
