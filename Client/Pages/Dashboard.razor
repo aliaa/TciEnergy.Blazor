@@ -2,9 +2,112 @@
 @page "/dashboard"
 @attribute [Authorize]
 
+@inject HttpClientX http
 
-<h3>Dashboard</h3>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-9">
+            <div class="card mt-4 bg-light">
+                <div class="card-header text-center text-white bg-secondary">اطلاعات کلی قبوض برق</div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped">
+                        <thead class="">
+                            <tr>
+                                <th></th>
+                                <th>سال 97 دوره 5</th>
+                                <th>سال 97 دوره 6</th>
+                                <th>سال 97 دوره 4</th>
+                                <th>سال 97 دوره 4</th>
+                                <th>سال 97 دوره 4</th>
+                                <th>سال 97 دوره 4</th>
+                                <th>سال 97 دوره 4</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>مبلغ قابل پرداخت تبریز</th>
+                                <td>18,081,637,000</td>
+                            </tr>
+                            <tr>
+                                <th>مبلغ قابل پرداخت سایر</th>
+                                <td>18,081,637,000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card mt-4 bg-light">
+                <div class="card-header text-center text-white bg-secondary">مبالغ جریمه برق</div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped">
+                        <thead class="">
+                            <tr>
+                                <th></th>
+                                <th>سال 97 دوره 5</th>
+                                <th>سال 97 دوره 6</th>
+                                <th>سال 97 دوره 4</th>
+                                <th>سال 97 دوره 4</th>
+                                <th>سال 97 دوره 4</th>
+                                <th>سال 97 دوره 4</th>
+                                <th>سال 97 دوره 4</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>مبلغ قابل پرداخت تبریز</th>
+                                <td>18,081,637,000</td>
+                            </tr>
+                            <tr>
+                                <th>مبلغ قابل پرداخت سایر</th>
+                                <td>18,081,637,000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card mt-4 bg-light">
+                <div class="card-header text-center text-white bg-secondary">مبالغ اکتیو برق</div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card mt-4 bg-light">
+                <div class="card-header text-center text-white bg-secondary">مشترکین پرمصرف تبریز</div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="card mt-4 bg-light">
+                <div class="card-header text-center text-white bg-secondary">مشترکین پرمصرف سایر</div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
+    private string mainCity;
 
+    protected override async Task OnInitializedAsync()
+    {
+        var city = await http.GetFromJsonAsync<City>("Dashboard/MainCity");
+        mainCity = city.Name;
+    }
 }

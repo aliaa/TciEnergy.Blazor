@@ -80,8 +80,6 @@ namespace TciEnergy.Blazor.Server.Configuration
 
             }, defaultConnection, customConnections);
 
-            //services.AddSingleton(sp => new DataTableFactory(sp.GetService<IReadOnlyDbContext>()));
-
             services.Configure<IISServerOptions>(options =>
             {
                 options.AutomaticAuthentication = false;
