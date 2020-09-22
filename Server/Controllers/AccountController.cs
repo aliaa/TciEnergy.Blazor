@@ -32,7 +32,7 @@ namespace TciEnergy.Blazor.Server.Controllers
         {
             if (model == null)
                 return Unauthorized();
-            var user = db.CheckAuthentication(model.Username, model.Password);
+            var user = dbs[model.Province].CheckAuthentication(model.Username, model.Password);
             if (user != null)
             {
                 var claims = new List<Claim>

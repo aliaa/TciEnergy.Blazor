@@ -14,13 +14,7 @@ namespace TciEnergy.Blazor.Server.Controllers
     {
         public DashboardController(ProvinceDBs dbs) : base(dbs) { }
 
-        [HttpGet]
-        public ActionResult<City> MainCity()
-        {
-            var mainCitySettings = db.FindFirst<Settings>(s => s.Key == "MainCity");
-            return db.FindById<City>(mainCitySettings.Value);
-        }
-
+        
         
     }
 }

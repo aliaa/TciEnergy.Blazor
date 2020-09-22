@@ -1,9 +1,48 @@
 ﻿@page "/subscribers/list"
 @attribute [Authorize]
 
+@inject HttpClientX http
 
-<h3>Subscriber List</h3>
+<div class="m-4 text-center">
+    @if (mainCity != null && cities != null)
+    {
+        <select @onchange="CityChanged">
+            <option value="all">همه</option>
+            <option value="@mainCity.Id" selected>@mainCity.Name</option>
+            <option value="others">سایر شهرستان ها</option>
+            @foreach (var city in cities.Where(c => c.Id != mainCity.Id))
+            {
+                <option value="@city.Id">@city.Name</option>
+            }
+        </select>
+    }
+</div>
+<div class="m-4">
+    @if (subscribers == null)
+    {
+        <Loading />
+    }
+    else
+    {
+        <ObjectTable Data="subscribers" />
+    }
+</div>
 
 @code {
+    private City mainCity;
+    private List<City> cities;
+    private List<Subscriber> subscribers;
 
+    protected override async Task OnInitializedAsync()
+    {
+        mainCity = await http.GetFromJsonAsync<City>("Place/MainCity");
+        cities = await http.GetFromJsonAsync<List<City>>("Place/CitiesList");
+        subscribers = await http.GetFromJsonAsync<List<Subscriber>>("Subscriber/List?city=" + mainCity.Id);
+    }
+
+    private async Task CityChanged(ChangeEventArgs e)
+    {
+        subscribers = null;
+        subscribers = await http.GetFromJsonAsync<List<Subscriber>>("Subscriber/List?city=" + e.Value);
+    }
 }

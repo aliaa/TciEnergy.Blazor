@@ -107,7 +107,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var city = await http.GetFromJsonAsync<City>("Dashboard/MainCity");
+        var city = await http.GetFromJsonAsync<City>("Place/MainCity");
         mainCity = city.Name;
     }
 }
