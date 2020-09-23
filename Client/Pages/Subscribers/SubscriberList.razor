@@ -7,6 +7,7 @@
 <div class="m-4 text-center">
     @if (mainCity != null && cities != null)
     {
+        <label>شهرستان:</label>
         <select @onchange="CityChanged">
             <option value="all">همه</option>
             <option value="@mainCity.Id" selected>@mainCity.Name</option>
@@ -16,6 +17,7 @@
                 <option value="@city.Id">@city.Name</option>
             }
         </select>
+        <button class="btn btn-secondary mr-3" @onclick="DownloadExcelFile">خروجی فایل اکسل</button>
     }
 </div>
 <div class="mt-4 table-responsive">
@@ -38,6 +40,7 @@
     private City mainCity;
     private List<City> cities;
     private List<ClientSubscriber> subscribers;
+    private string selectedCity;
 
     protected override async Task OnInitializedAsync()
     {
@@ -55,12 +58,19 @@
 
         mainCity = await http.GetFromJsonAsync<City>("Place/MainCity");
         cities = await http.GetFromJsonAsync<List<City>>("Place/CitiesList");
-        subscribers = await http.GetFromJsonAsync<List<ClientSubscriber>>("Subscriber/List?city=" + mainCity.Id);
+        selectedCity = mainCity.Id.ToString();
+        subscribers = await http.GetFromJsonAsync<List<ClientSubscriber>>("Subscriber/List?city=" + selectedCity);
     }
 
     private async Task CityChanged(ChangeEventArgs e)
     {
+        selectedCity = e.Value.ToString();
         subscribers = null;
-        subscribers = await http.GetFromJsonAsync<List<ClientSubscriber>>("Subscriber/List?city=" + e.Value);
+        subscribers = await http.GetFromJsonAsync<List<ClientSubscriber>>("Subscriber/List?city=" + selectedCity);
+    }
+
+    private async Task DownloadExcelFile()
+    {
+        await http.DownloadFile("Subscriber/ExcelFile?city=" + selectedCity);
     }
 }

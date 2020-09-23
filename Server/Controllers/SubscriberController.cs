@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AliaaCommon;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using OfficeOpenXml;
 using Omu.ValueInjecter;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using TciCommon.ServerUtils;
 using TciEnergy.Blazor.Shared.Models;
@@ -15,9 +18,14 @@ namespace TciEnergy.Blazor.Server.Controllers
     [Authorize]
     public class SubscriberController : BaseController
     {
-        public SubscriberController(ProvinceDBs dbs) : base(dbs) { }
+        private readonly DataTableFactory tableFactory;
 
-        public ActionResult<List<ClientSubscriber>> List(string city)
+        public SubscriberController(ProvinceDBs dbs, DataTableFactory tableFactory) : base(dbs)
+        {
+            this.tableFactory = tableFactory;
+        }
+
+        private List<ClientSubscriber> GetList(string city)
         {
             FilterDefinition<Subscriber> filter;
             var fb = Builders<Subscriber>.Filter;
@@ -42,6 +50,27 @@ namespace TciEnergy.Blazor.Server.Controllers
             }
 
             return result;
+        }
+
+        public ActionResult<List<ClientSubscriber>> List(string city) => GetList(city);
+
+        public IActionResult ExcelFile(string city)
+        {
+            var list = GetList(city);
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            byte[] file;
+            using (var memStream = new MemoryStream())
+            {
+                using (var package = new ExcelPackage(memStream))
+                {
+                    ExcelWorksheet sheet = package.Workbook.Worksheets.Add("Subscribers");
+                    var table = tableFactory.Create(list, excludeColumns: new string[] { nameof(ClientSubscriber.Id) });
+                    sheet.Cells["A1"].LoadFromDataTable(table, true);
+                    package.Save();
+                }
+                file = memStream.ToArray();
+            }
+            return File(file, "application/octet-stream", "Subscribers.xlsx");
         }
     }
 }

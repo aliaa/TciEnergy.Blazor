@@ -69,7 +69,8 @@ namespace TciEnergy.Blazor.Server.Configuration
 
             // configure db:
             services.AddMongDbContext(Configuration);
-            services.AddSingleton(sp => new DataTableFactory(sp.GetService<IReadOnlyDbContext>()));
+
+            services.AddSingleton<DataTableFactory>();
 
             services.Configure<IISServerOptions>(options =>
             {
