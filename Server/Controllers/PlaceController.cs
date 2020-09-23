@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using EasyMongoNet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
@@ -24,7 +25,9 @@ namespace TciEnergy.Blazor.Server.Controllers
         }
 
         [Authorize]
-        public ActionResult<City> MainCity()
+        public ActionResult<City> MainCity() => GetMainCity(db);
+
+        public static City GetMainCity(IReadOnlyDbContext db)
         {
             var mainCitySettings = db.FindFirst<Settings>(s => s.Key == "MainCity");
             return db.FindById<City>(mainCitySettings.Value);
@@ -35,5 +38,6 @@ namespace TciEnergy.Blazor.Server.Controllers
         {
             return Cities.ToList();
         }
+
     }
 }

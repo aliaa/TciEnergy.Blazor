@@ -63,7 +63,7 @@ namespace TciEnergy.Blazor.Server.Configuration
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
-            services.AddRazorPages().AddControllersAsServices();
+            services.AddRazorPages();
 
             services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Arabic));
 

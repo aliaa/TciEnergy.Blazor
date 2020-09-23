@@ -2,6 +2,7 @@
 @attribute [Authorize]
 
 @inject HttpClientX http
+@inject AuthenticationStateProvider _auth
 
 <div class="m-4 text-center">
     @if (mainCity != null && cities != null)
@@ -17,32 +18,49 @@
         </select>
     }
 </div>
-<div class="m-4">
+<div class="mt-4 table-responsive">
     @if (subscribers == null)
     {
         <Loading />
     }
     else
     {
-        <ObjectTable Data="subscribers" />
+        <ObjectTable Data="subscribers" LinkColumns="linkColumns.ToArray()" />
     }
 </div>
 
 @code {
+    private List<ObjectTable<ClientSubscriber>.LinkColumn> linkColumns = new List<ObjectTable<ClientSubscriber>.LinkColumn>
+    {
+        new ObjectTable<ClientSubscriber>.LinkColumn { Text = "جزئیات", FieldName = nameof(ClientSubscriber.Id), Link = "/subscribers/details/{Id}" }
+    };
+
     private City mainCity;
     private List<City> cities;
-    private List<Subscriber> subscribers;
+    private List<ClientSubscriber> subscribers;
 
     protected override async Task OnInitializedAsync()
     {
+        var auth = (AuthStateProvider)_auth;
+        var user = await auth.GetUser();
+        if (user.HasPermission(Permission.ChangeSubscribers))
+        {
+            linkColumns.Add(new ObjectTable<ClientSubscriber>.LinkColumn
+            {
+                Text = "ویرایش",
+                FieldName = nameof(ClientSubscriber.Id),
+                Link = "/subscribers/edit/{Id}"
+            });
+        }
+
         mainCity = await http.GetFromJsonAsync<City>("Place/MainCity");
         cities = await http.GetFromJsonAsync<List<City>>("Place/CitiesList");
-        subscribers = await http.GetFromJsonAsync<List<Subscriber>>("Subscriber/List?city=" + mainCity.Id);
+        subscribers = await http.GetFromJsonAsync<List<ClientSubscriber>>("Subscriber/List?city=" + mainCity.Id);
     }
 
     private async Task CityChanged(ChangeEventArgs e)
     {
         subscribers = null;
-        subscribers = await http.GetFromJsonAsync<List<Subscriber>>("Subscriber/List?city=" + e.Value);
+        subscribers = await http.GetFromJsonAsync<List<ClientSubscriber>>("Subscriber/List?city=" + e.Value);
     }
 }
