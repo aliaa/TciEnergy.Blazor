@@ -2,10 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using TciCommon.Models;
 using TciCommon.ServerUtils;
 using TciEnergy.Blazor.Server.Models;
@@ -65,5 +69,17 @@ namespace TciEnergy.Blazor.Server.Controllers
         }
 
         protected IEnumerable<City> Cities => db.Find<City>(c => c.Province == Province.Id).SortBy(c => c.Name).ToEnumerable();
+
+        protected async Task<FileContentResult> CreateExcelFile(DataTable table, string sheetName, string fileName)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using var memStream = new MemoryStream();
+            using var package = new ExcelPackage(memStream);
+            ExcelWorksheet sheet = package.Workbook.Worksheets.Add(sheetName);
+            sheet.Cells["A1"].LoadFromDataTable(table, true);
+            await package.SaveAsync();
+            var file = memStream.ToArray();
+            return File(file, "application/octet-stream", fileName);
+        }
     }
 }

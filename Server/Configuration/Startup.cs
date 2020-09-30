@@ -1,5 +1,4 @@
 using AliaaCommon;
-using EasyMongoNet;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -64,13 +63,14 @@ namespace TciEnergy.Blazor.Server.Configuration
             });
 
             services.AddRazorPages();
+            services.AddHttpContextAccessor();
 
             services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Arabic));
 
             // configure db:
-            services.AddMongDbContext(Configuration);
+            services.AddMongoDbContexts(Configuration);
 
-            services.AddSingleton<DataTableFactory>();
+            services.AddTransient<DataTableFactory>();
 
             services.Configure<IISServerOptions>(options =>
             {

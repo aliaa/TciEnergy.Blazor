@@ -3,11 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using OfficeOpenXml;
 using Omu.ValueInjecter;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using TciCommon.ServerUtils;
 using TciEnergy.Blazor.Shared.Models;
 
@@ -54,23 +53,11 @@ namespace TciEnergy.Blazor.Server.Controllers
 
         public ActionResult<List<ClientSubscriber>> List(string city) => GetList(city);
 
-        public IActionResult ExcelFile(string city)
+        public async Task<IActionResult> ExcelFile(string city)
         {
             var list = GetList(city);
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            byte[] file;
-            using (var memStream = new MemoryStream())
-            {
-                using (var package = new ExcelPackage(memStream))
-                {
-                    ExcelWorksheet sheet = package.Workbook.Worksheets.Add("Subscribers");
-                    var table = tableFactory.Create(list, excludeColumns: new string[] { nameof(ClientSubscriber.Id) });
-                    sheet.Cells["A1"].LoadFromDataTable(table, true);
-                    package.Save();
-                }
-                file = memStream.ToArray();
-            }
-            return File(file, "application/octet-stream", "Subscribers.xlsx");
+            var table = tableFactory.Create(list, excludeColumns: new string[] { nameof(ClientSubscriber.Id) });
+            return await CreateExcelFile(table, "Subscribers", "Subscribers.xlsx");
         }
     }
 }

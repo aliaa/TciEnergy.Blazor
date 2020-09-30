@@ -1,0 +1,15 @@
+﻿@page "/subscribers/details/{id}"
+@page "/subscribers/details/{subsNum:int}"
+
+<h3>SubscriberDetails</h3>
+Id: @id
+<br/>
+SubsNum: @subsNum
+
+@code {
+    [Parameter]
+    public string id { get; set; }
+
+    [Parameter]
+    public int subsNum { get; set; }
+}

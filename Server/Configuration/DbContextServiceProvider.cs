@@ -1,7 +1,9 @@
 ﻿using AliaaCommon;
 using EasyMongoNet;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,7 +15,7 @@ namespace TciEnergy.Blazor.Server.Configuration
 {
     public static class DbContextServiceProvider
     {
-        public static void AddMongDbContext(this IServiceCollection services, IConfiguration config)
+        public static void AddMongoDbContexts(this IServiceCollection services, IConfiguration config)
         {
             string filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), StringNormalizer.JSON_FILE_NAME);
             var stringNormalizer = new StringNormalizer(filePath);
@@ -39,6 +41,19 @@ namespace TciEnergy.Blazor.Server.Configuration
             }
 
             services.AddSingleton(dbs);
+
+            services.AddTransient<IReadOnlyDbContext>(serviceProvider => GetFromServices(serviceProvider));
+            services.AddTransient<IDbContext>(serviceProvider => GetFromServices(serviceProvider));
+        }
+
+        private static IDbContext GetFromServices(IServiceProvider serviceProvider)
+        {
+            var dbs = serviceProvider.GetService<ProvinceDBs>();
+            var httpContext = serviceProvider.GetService<IHttpContextAccessor>();
+            var province = httpContext.HttpContext.User.FindFirst(nameof(Province))?.Value;
+            if (province == null)
+                return null;
+            return dbs[province];
         }
     }
 }

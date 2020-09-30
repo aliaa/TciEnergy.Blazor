@@ -10,34 +10,10 @@ namespace TciEnergy.Blazor.Shared.Models
     [CollectionIndex(new string[] { nameof(SubsNum) })]
     public class ElecBill : MongoEntity
     {
-        //public static Func<int, Subscriber> GetSubscriberFunc;
-        public static Func<ObjectId, string> GetCityNameFunc;
-
         [Display(Name = "شماره اشتراک")]
         public int SubsNum { get; set; }
 
-        //private Subscriber _subscriber = null;
-
-        //private Subscriber GetSubscriber()
-        //{
-        //    if (_subscriber == null)
-        //        _subscriber = GetSubscriberFunc(SubsNum);
-        //    return _subscriber;
-        //}
-
-        //[Display(Name = "نام مشترک")]
-        //public string SubscriberName => GetSubscriber()?.Name;
-
         public ObjectId CityId { get; set; }
-
-        [Display(Name = "شهر")]
-        public string CityName
-        {
-            get
-            {
-                return GetCityNameFunc(CityId);
-            }
-        }
 
         private int _year;
         [Display(Name = "سال")]

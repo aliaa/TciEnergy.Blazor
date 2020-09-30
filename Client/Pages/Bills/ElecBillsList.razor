@@ -1,8 +1,74 @@
 ﻿@page "/bills/elec/list"
 @attribute [Authorize]
 
-<h3>ElecBillsList</h3>
+@inject HttpClientX http
+
+
+<div class="text-center">
+    @if (cities != null && yearPeriods != null)
+    {
+        <label>شهرستان:</label>
+        <select @onchange="async (e) => { selectedCity = e.Value.ToString(); await RefreshList(); }">
+            <option value="all">همه</option>
+            @foreach (var city in cities)
+            {
+                <option value="@city.Id.ToString()">@city.Name</option>
+            }
+        </select>
+        <label class="mr-3">دوره:</label>
+        <select @onchange="async (e) => { selectedYearPeriod = e.Value.ToString(); await RefreshList(); }">
+            @foreach (var yp in yearPeriods)
+            {
+                <option>@yp</option>
+            }
+        </select>
+        <button class="btn btn-secondary mr-3" @onclick="DownloadExcelFile">خروجی فایل اکسل</button>
+    }
+</div>
+<div class="mt-4">
+    @if (bills == null)
+    {
+        <Loading />
+    }
+    else
+    {
+        <div class="table-responsive">
+            <ObjectTable Data="bills" LinkColumns="linkColumns.ToArray()" />
+        </div>
+    }
+</div>
 
 @code {
+    private List<ObjectTable<ClientElecBill>.LinkColumn> linkColumns = new List<ObjectTable<ClientElecBill>.LinkColumn>
+    {
+        new ObjectTable<ClientElecBill>.LinkColumn { Text = "جزئیات مشترک", FieldName = nameof(ClientElecBill.SubsNum), Link = "/subscribers/details/{SubsNum}" }
+    };
 
+    private List<City> cities;
+    private List<string> yearPeriods;
+    private string selectedCity = "all";
+    private string selectedYearPeriod;
+    private List<ClientElecBill> bills;
+
+    protected override async Task OnInitializedAsync()
+    {
+        cities = await http.GetFromJsonAsync<List<City>>("Place/CitiesList");
+        yearPeriods = await http.GetFromJsonAsync<List<string>>("Bills/YearPeriods");
+        if (yearPeriods != null && yearPeriods.Count > 0)
+        {
+            selectedYearPeriod = yearPeriods[0];
+            await RefreshList();
+        }
+    }
+
+    private async Task RefreshList()
+    {
+        bills = null;
+        bills = await http.GetFromJsonAsync<List<ClientElecBill>>("Bills/List?city=" + selectedCity + "&yearPeriod=" + selectedYearPeriod);
+    }
+
+    private async Task DownloadExcelFile()
+    {
+        await http.DownloadFile("Bills/ExcelFile?city=" + selectedCity + "&yearPeriod=" + selectedYearPeriod);
+    }
 }

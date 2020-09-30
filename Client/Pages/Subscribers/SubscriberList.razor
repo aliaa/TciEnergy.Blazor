@@ -4,7 +4,7 @@
 @inject HttpClientX http
 @inject AuthenticationStateProvider _auth
 
-<div class="m-4 text-center">
+<div class="text-center">
     @if (mainCity != null && cities != null)
     {
         <label>شهرستان:</label>
@@ -20,14 +20,16 @@
         <button class="btn btn-secondary mr-3" @onclick="DownloadExcelFile">خروجی فایل اکسل</button>
     }
 </div>
-<div class="mt-4 table-responsive">
+<div class="mt-4">
     @if (subscribers == null)
     {
         <Loading />
     }
     else
     {
-        <ObjectTable Data="subscribers" LinkColumns="linkColumns.ToArray()" />
+        <div class="table-responsive">
+            <ObjectTable Data="subscribers" LinkColumns="linkColumns.ToArray()" />
+        </div>
     }
 </div>
 
