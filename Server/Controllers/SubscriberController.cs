@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TciCommon.ServerUtils;
+using TciEnergy.Blazor.Shared;
 using TciEnergy.Blazor.Shared.Models;
 
 namespace TciEnergy.Blazor.Server.Controllers
@@ -22,6 +23,11 @@ namespace TciEnergy.Blazor.Server.Controllers
         public SubscriberController(ProvinceDBs dbs, DataTableFactory tableFactory) : base(dbs)
         {
             this.tableFactory = tableFactory;
+        }
+
+        public ActionResult<Subscriber> Item(ObjectId id)
+        {
+            return db.FindById<Subscriber>(id);
         }
 
         private List<ClientSubscriber> GetList(string city)
@@ -58,6 +64,21 @@ namespace TciEnergy.Blazor.Server.Controllers
             var list = GetList(city);
             var table = tableFactory.Create(list, excludeColumns: new string[] { nameof(ClientSubscriber.Id) });
             return await CreateExcelFile(table, "Subscribers", "Subscribers.xlsx");
+        }
+
+        //[Authorize(nameof(Permission.ChangeSubscribers))]
+        [HttpPost]
+        public IActionResult Save(Subscriber item)
+        {
+            try
+            {
+                db.Save(item);
+                return Ok("اطلاعات مشترک با موفقیت ذخیره شد!");
+            }
+            catch
+            {
+                return BadRequest("خطا: شماره اشتراک یا نام مشترک قبلا موجود میباشد!");
+            }
         }
     }
 }

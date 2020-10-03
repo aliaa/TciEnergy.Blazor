@@ -2,10 +2,191 @@
 @page "/subscribers/edit/{id}"
 @attribute [Authorize(nameof(Permission.ChangeSubscribers))]
 
+@inject HttpClientX http
+@inject IToastService toast
 
-<h3>New Subscriber</h3>
+<div class="container">
+    @if (id == null)
+    {
+        <h3>مشترک جدید</h3>
+    }
+    else
+    {
+        <h3>ویرایش مشترک</h3>
+    }
+    <EditForm Model="model" OnValidSubmit="Submit">
+        <DataAnnotationsValidator />
+        <div class="card mt-5">
+            <div class="card-header text-center">اطلاعات عمومی مشترک</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <Label For="() => model.Name" />
+                            <InputText @bind-Value="model.Name" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <Label For="() => model.Address" />
+                            <InputText @bind-Value="model.Address" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        @if (cities != null)
+                        {
+                            <div class="form-group">
+                                <Label For="() => model.City" />
+                                <InputSelect @bind-Value="model.City" class="form-control">
+                                    @foreach (var city in cities)
+                                        {
+                                        <option value="@city.Id.ToString()">@city.Name</option>
+                                        }
+                                </InputSelect>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <Label For="() => model.BuildingCode" />
+                            <InputNumber @bind-Value="model.BuildingCode" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <Label For="() => model.RegistryCode" />
+                            <InputNumber @bind-Value="model.RegistryCode" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <Label For="() => model.Phone" />
+                            <InputText @bind-Value="model.Phone" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <Label For="() => model.CommCenterPhoneCapacity" />
+                            <InputNumber @bind-Value="model.CommCenterPhoneCapacity" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <Label For="() => model.ConsumerType" />
+                            <InputSelect @bind-Value="model.ConsumerType" class="form-control">
+                                @foreach (var t in UtilsX.GetEnumValues<Subscriber.ConsumerTypeEnum>())
+                                {
+                                    <option value="@t">@UtilsX.DisplayName(t)</option>
+                                }
+                            </InputSelect>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mt-5">
+            <div class="card-header text-center">اطلاعات اشتراک برق</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <Label For="() => model.ElecSub.ElecSubsNum" />
+                            <InputNumber @bind-Value="model.ElecSub.ElecSubsNum" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <Label For="() => model.ElecSub.ContractedElecPower" />
+                            <InputNumber @bind-Value="model.ElecSub.ContractedElecPower" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <Label For="() => model.ElecSub.ElecCounterBodyNum" />
+                            <InputNumber @bind-Value="model.ElecSub.ElecCounterBodyNum" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <Label For="() => model.ElecSub.DossierNum" />
+                            <InputNumber @bind-Value="model.ElecSub.DossierNum" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <Label For="() => model.ElecSub.PhaseType" />
+                            <InputSelect @bind-Value="model.ElecSub.PhaseType" class="form-control">
+                                @foreach (var t in UtilsX.GetEnumValues<ElectricitySubscriber.ElecPhaseEnum>())
+                                {
+                                    <option value="@t">@UtilsX.DisplayName(t)</option>
+                                }
+                            </InputSelect>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <Label For="() => model.ElecSub.TariffType" />
+                            <InputSelect @bind-Value="model.ElecSub.TariffType" class="form-control">
+                                @foreach (var t in UtilsX.GetEnumValues<ElectricitySubscriber.TariffTypeEnum>())
+                                {
+                                    <option value="@t">@UtilsX.DisplayName(t)</option>
+                                }
+                            </InputSelect>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <Label For="() => model.ElecSub.BodyNumber" />
+                            <InputNumber @bind-Value="model.ElecSub.BodyNumber" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <Label For="() => model.ElecSub.TransCapacity" />
+                            <InputNumber @bind-Value="model.ElecSub.TransCapacity" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <Label For="() => model.ElecSub.CounterCoefficient" />
+                            <InputNumber @bind-Value="model.ElecSub.CounterCoefficient" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-5">
+            <input type="submit" class="btn btn-primary" value="ذخیره" />
+        </div>
+    </EditForm>
+</div>
 
 @code {
     [Parameter]
     public string id { get; set; }
+
+    public Subscriber model { get; set; } = new Subscriber();
+    private List<City> cities;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (id != null)
+            model = await http.GetFromJsonAsync<Subscriber>("Subscriber/Item?id=" + id);
+        cities = await http.GetFromJsonAsync<List<City>>("Place/CitiesList");
+    }
+
+    private async Task Submit(EditContext context)
+    {
+        if (id != null)
+            model.Id = ObjectId.Parse(id);
+        try
+        {
+            var msg = await http.PostAsJsonAsync("Subscriber/Save", model);
+            toast.ShowSuccess(await msg.Content.ReadAsStringAsync());
+        }
+        catch (Exception ex)
+        {
+            toast.ShowError(ex.Message, "خطا");
+        }
+    }
 }

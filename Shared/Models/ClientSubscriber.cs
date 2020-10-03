@@ -12,6 +12,7 @@ namespace TciEnergy.Blazor.Shared.Models
         public string Name { get; set; }
 
         [Display(Name = "آدرس")]
+        [Required]
         public string Address { get; set; }
 
         [Display(Name = "شهر")]
