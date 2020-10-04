@@ -14,6 +14,7 @@ using TciCommon.Models;
 using TciCommon.ServerUtils;
 using TciEnergy.Blazor.Server.Models;
 using TciEnergy.Blazor.Shared;
+using TciEnergy.Blazor.Shared.Models;
 
 namespace TciEnergy.Blazor.Server.Controllers
 {
@@ -80,6 +81,17 @@ namespace TciEnergy.Blazor.Server.Controllers
             await package.SaveAsync();
             var file = memStream.ToArray();
             return File(file, "application/octet-stream", fileName);
+        }
+
+        private static ObjectId _mainCityId;
+        public ObjectId MainCityId
+        {
+            get
+            {
+                if (_mainCityId == ObjectId.Empty)
+                    _mainCityId = ObjectId.Parse(db.Find<Settings>(s => s.Key == "MainCity").Project(s => s.Value).FirstOrDefault());
+                return _mainCityId;
+            }
         }
     }
 }

@@ -8,106 +8,139 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-9">
-            <div class="card mt-4 bg-light">
-                <div class="card-header text-center text-white bg-secondary">اطلاعات کلی قبوض برق</div>
-                <div class="card-body">
-                    <table class="table table-bordered table-striped table-sm">
-                        <thead class="">
-                            <tr>
-                                <th></th>
-                                <th>سال 97 دوره 5</th>
-                                <th>سال 97 دوره 6</th>
-                                <th>سال 97 دوره 4</th>
-                                <th>سال 97 دوره 4</th>
-                                <th>سال 97 دوره 4</th>
-                                <th>سال 97 دوره 4</th>
-                                <th>سال 97 دوره 4</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th>مبلغ قابل پرداخت تبریز</th>
-                                <td>18,081,637,000</td>
-                            </tr>
-                            <tr>
-                                <th>مبلغ قابل پرداخت سایر</th>
-                                <td>18,081,637,000</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            @if (totalPrices != null)
+            {
+                <div class="card mt-4 bg-light">
+                    <div class="card-header text-center text-white bg-secondary">اطلاعات کلی قبوض برق</div>
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>@(UtilsX.DisplayName<ElecBillsTotalInformation>(x => x.TotalPriceMainCity).Replace("شهر اصلی", mainCity))</th>
+                                    <th>@(UtilsX.DisplayName<ElecBillsTotalInformation>(x => x.TotalPriceOthers))</th>
+                                    <th>@(UtilsX.DisplayName<ElecBillsTotalInformation>(x => x.TotalPriceSum))</th>
+                                    <th>@(UtilsX.DisplayName<ElecBillsTotalInformation>(x => x.BillsCountMainCity).Replace("شهر اصلی", mainCity))</th>
+                                    <th>@(UtilsX.DisplayName<ElecBillsTotalInformation>(x => x.BillsCountOthers))</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in totalPrices)
+                                {
+                                    <tr>
+                                        <th>@item.YearPeriod</th>
+                                        <td>@item.TotalPriceMainCity.ToString("N0")</td>
+                                        <td>@item.TotalPriceOthers.ToString("N0")</td>
+                                        <td>@item.TotalPriceSum.ToString("N0")</td>
+                                        <td>@item.BillsCountMainCity.ToString("N0")</td>
+                                        <td>@item.BillsCountOthers.ToString("N0")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
+            }
+            else
+            {
+                <Loading />
+            }
             <div class="card mt-4 bg-light">
                 <div class="card-header text-center text-white bg-secondary">مبالغ جریمه برق</div>
                 <div class="card-body">
                     <table class="table table-bordered table-striped table-sm">
-                        <thead class="">
-                            <tr>
-                                <th></th>
-                                <th>سال 97 دوره 5</th>
-                                <th>سال 97 دوره 6</th>
-                                <th>سال 97 دوره 4</th>
-                                <th>سال 97 دوره 4</th>
-                                <th>سال 97 دوره 4</th>
-                                <th>سال 97 دوره 4</th>
-                                <th>سال 97 دوره 4</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th>مبلغ قابل پرداخت تبریز</th>
-                                <td>18,081,637,000</td>
-                            </tr>
-                            <tr>
-                                <th>مبلغ قابل پرداخت سایر</th>
-                                <td>18,081,637,000</td>
-                            </tr>
-                        </tbody>
                     </table>
                 </div>
             </div>
             <div class="card mt-4 bg-light">
                 <div class="card-header text-center text-white bg-secondary">مبالغ اکتیو برق</div>
                 <div class="card-body">
-                    <table class="table table-bordered table-sm">
-                        <tr>
-                            <td></td>
-                        </tr>
+                    <table class="table table-bordered table-striped table-sm">
                     </table>
                 </div>
             </div>
         </div>
         <div class="col-lg-3">
-            <div class="card mt-4 bg-light">
-                <div class="card-header text-center text-white bg-secondary">مشترکین پرمصرف تبریز</div>
-                <div class="card-body">
-                    <table class="table table-bordered table-sm">
-                        <tr>
-                            <td></td>
-                        </tr>
-                    </table>
+            @if (topUsagesMainCity != null)
+            {
+                <div class="card mt-4 bg-light">
+                    <div class="card-header text-center text-white bg-secondary">مشترکین پرمصرف @mainCity</div>
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th>مشترک</th>
+                                    <th>جمع</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in topUsagesMainCity)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="/subscribers/details/@item.Id">@item.Name</a>
+                                        </td>
+                                        <td>@item.TotalSum.ToString("N0")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-            <div class="card mt-4 bg-light">
-                <div class="card-header text-center text-white bg-secondary">مشترکین پرمصرف سایر</div>
-                <div class="card-body">
-                    <table class="table table-bordered table-sm">
-                        <tr>
-                            <td></td>
-                        </tr>
-                    </table>
+            }
+            else
+            {
+                <Loading />
+            }
+
+            @if (topUsagesOthers != null)
+            {
+                <div class="card mt-4 bg-light">
+                    <div class="card-header text-center text-white bg-secondary">مشترکین پرمصرف سایر شهرستانها</div>
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th>مشترک</th>
+                                    <th>جمع</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in topUsagesOthers)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="/subscribers/details/@item.Id">@item.Name</a>
+                                        </td>
+                                        <td>@item.TotalSum.ToString("N0")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
+            }
+            else
+            {
+                <Loading />
+            }
         </div>
     </div>
 </div>
 
 @code {
     private string mainCity;
+    private List<ElecBillsTotalInformation> totalPrices;
+    private List<ElecSubscriberSummary> topUsagesMainCity;
+    private List<ElecSubscriberSummary> topUsagesOthers;
+
 
     protected override async Task OnInitializedAsync()
     {
         var city = await http.GetFromJsonAsync<City>("Place/MainCity");
         mainCity = city.Name;
+        totalPrices = await http.GetFromJsonAsync<List<ElecBillsTotalInformation>>("Dashboard/TotalPrices");
+        topUsagesMainCity = await http.GetFromJsonAsync<List<ElecSubscriberSummary>>("Dashboard/TopUsageSubscribers?mainCity=true");
+        topUsagesOthers = await http.GetFromJsonAsync<List<ElecSubscriberSummary>>("Dashboard/TopUsageSubscribers?mainCity=false");
     }
 }
