@@ -5,6 +5,16 @@
 @inject HttpClientX http
 
 <div class="container mt-4">
+    <style type="text/css">
+        body {
+            min-height: 100%;
+            position: relative;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            background-image: url('/image/background.jpg');
+        }
+    </style>
     <h3>ورود</h3>
     <EditForm Model="model" OnValidSubmit="CheckLogin">
         <DataAnnotationsValidator />
