@@ -6,13 +6,16 @@
 @inject IToastService toast
 
 <div class="container">
-    @if (id == null)
+    @if (!DisableMode)
     {
-        <h3>مشترک جدید</h3>
-    }
-    else
-    {
-        <h3>ویرایش مشترک</h3>
+        @if (id == null)
+        {
+            <h3>مشترک جدید</h3>
+        }
+        else
+        {
+            <h3>ویرایش مشترک</h3>
+        }
     }
     <EditForm Model="model" OnValidSubmit="Submit">
         <DataAnnotationsValidator />
@@ -23,13 +26,13 @@
                     <div class="col-lg-6">
                         <div class="form-group">
                             <Label For="() => model.Name" />
-                            <InputText @bind-Value="model.Name" class="form-control" />
+                            <InputText @bind-Value="model.Name" class="form-control" @attributes="inputAttributes" />
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="form-group">
                             <Label For="() => model.Address" />
-                            <InputText @bind-Value="model.Address" class="form-control" />
+                            <InputText @bind-Value="model.Address" class="form-control" @attributes="inputAttributes" />
                         </div>
                     </div>
                     <div class="col-lg-4">
@@ -37,7 +40,7 @@
                         {
                             <div class="form-group">
                                 <Label For="() => model.City" />
-                                <InputSelect @bind-Value="model.City" class="form-control">
+                                <InputSelect @bind-Value="model.City" class="form-control" @attributes="inputAttributes">
                                     @foreach (var city in cities)
                                         {
                                         <option value="@city.Id.ToString()">@city.Name</option>
@@ -49,31 +52,31 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <Label For="() => model.BuildingCode" />
-                            <InputNumber @bind-Value="model.BuildingCode" class="form-control" />
+                            <InputNumber @bind-Value="model.BuildingCode" class="form-control" @attributes="inputAttributes" />
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <Label For="() => model.RegistryCode" />
-                            <InputNumber @bind-Value="model.RegistryCode" class="form-control" />
+                            <InputNumber @bind-Value="model.RegistryCode" class="form-control" @attributes="inputAttributes" />
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <Label For="() => model.Phone" />
-                            <InputText @bind-Value="model.Phone" class="form-control" />
+                            <InputText @bind-Value="model.Phone" class="form-control" @attributes="inputAttributes" />
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <Label For="() => model.CommCenterPhoneCapacity" />
-                            <InputNumber @bind-Value="model.CommCenterPhoneCapacity" class="form-control" />
+                            <InputNumber @bind-Value="model.CommCenterPhoneCapacity" class="form-control" @attributes="inputAttributes" />
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <Label For="() => model.ConsumerType" />
-                            <InputSelect @bind-Value="model.ConsumerType" class="form-control">
+                            <InputSelect @bind-Value="model.ConsumerType" class="form-control" @attributes="inputAttributes">
                                 @foreach (var t in UtilsX.GetEnumValues<Subscriber.ConsumerTypeEnum>())
                                 {
                                     <option value="@t">@UtilsX.DisplayName(t)</option>
@@ -91,31 +94,31 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <Label For="() => model.ElecSub.ElecSubsNum" />
-                            <InputNumber @bind-Value="model.ElecSub.ElecSubsNum" class="form-control" />
+                            <InputNumber @bind-Value="model.ElecSub.ElecSubsNum" class="form-control" @attributes="inputAttributes" />
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <Label For="() => model.ElecSub.ContractedElecPower" />
-                            <InputNumber @bind-Value="model.ElecSub.ContractedElecPower" class="form-control" />
+                            <InputNumber @bind-Value="model.ElecSub.ContractedElecPower" class="form-control" @attributes="inputAttributes" />
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <Label For="() => model.ElecSub.ElecCounterBodyNum" />
-                            <InputNumber @bind-Value="model.ElecSub.ElecCounterBodyNum" class="form-control" />
+                            <InputNumber @bind-Value="model.ElecSub.ElecCounterBodyNum" class="form-control" @attributes="inputAttributes" />
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <Label For="() => model.ElecSub.DossierNum" />
-                            <InputNumber @bind-Value="model.ElecSub.DossierNum" class="form-control" />
+                            <InputNumber @bind-Value="model.ElecSub.DossierNum" class="form-control" @attributes="inputAttributes" />
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <Label For="() => model.ElecSub.PhaseType" />
-                            <InputSelect @bind-Value="model.ElecSub.PhaseType" class="form-control">
+                            <InputSelect @bind-Value="model.ElecSub.PhaseType" class="form-control" @attributes="inputAttributes">
                                 @foreach (var t in UtilsX.GetEnumValues<ElectricitySubscriber.ElecPhaseEnum>())
                                 {
                                     <option value="@t">@UtilsX.DisplayName(t)</option>
@@ -126,7 +129,7 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <Label For="() => model.ElecSub.TariffType" />
-                            <InputSelect @bind-Value="model.ElecSub.TariffType" class="form-control">
+                            <InputSelect @bind-Value="model.ElecSub.TariffType" class="form-control" @attributes="inputAttributes">
                                 @foreach (var t in UtilsX.GetEnumValues<ElectricitySubscriber.TariffTypeEnum>())
                                 {
                                     <option value="@t">@UtilsX.DisplayName(t)</option>
@@ -137,27 +140,30 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <Label For="() => model.ElecSub.BodyNumber" />
-                            <InputNumber @bind-Value="model.ElecSub.BodyNumber" class="form-control" />
+                            <InputNumber @bind-Value="model.ElecSub.BodyNumber" class="form-control" @attributes="inputAttributes" />
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <Label For="() => model.ElecSub.TransCapacity" />
-                            <InputNumber @bind-Value="model.ElecSub.TransCapacity" class="form-control" />
+                            <InputNumber @bind-Value="model.ElecSub.TransCapacity" class="form-control" @attributes="inputAttributes" />
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <Label For="() => model.ElecSub.CounterCoefficient" />
-                            <InputNumber @bind-Value="model.ElecSub.CounterCoefficient" class="form-control" />
+                            <InputNumber @bind-Value="model.ElecSub.CounterCoefficient" class="form-control" @attributes="inputAttributes" />
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="mt-5">
-            <input type="submit" class="btn btn-primary" value="ذخیره" />
-        </div>
+        @if (!DisableMode)
+        {
+            <div class="mt-5">
+                <input type="submit" class="btn btn-primary" value="ذخیره" />
+            </div>
+        }
     </EditForm>
 </div>
 
@@ -165,11 +171,17 @@
     [Parameter]
     public string id { get; set; }
 
+    [Parameter]
+    public bool DisableMode { get; set; }
+    private Dictionary<string, object> inputAttributes = new Dictionary<string, object>();
+
     public Subscriber model { get; set; } = new Subscriber();
     private List<City> cities;
 
     protected override async Task OnInitializedAsync()
     {
+        if (DisableMode)
+            inputAttributes.Add("readonly", "");
         if (id != null)
             model = await http.GetFromJsonAsync<Subscriber>("Subscriber/Item?id=" + id);
         cities = await http.GetFromJsonAsync<List<City>>("Place/CitiesList");
@@ -177,6 +189,8 @@
 
     private async Task Submit(EditContext context)
     {
+        if (DisableMode)
+            return;
         if (id != null)
             model.Id = ObjectId.Parse(id);
         try

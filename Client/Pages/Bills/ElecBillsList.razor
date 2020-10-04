@@ -39,36 +39,36 @@
 </div>
 
 @code {
-    private List<ObjectTable<ClientElecBill>.LinkColumn> linkColumns = new List<ObjectTable<ClientElecBill>.LinkColumn>
-    {
-        new ObjectTable<ClientElecBill>.LinkColumn { Text = "جزئیات مشترک", FieldName = nameof(ClientElecBill.SubsNum), Link = "/subscribers/details/{SubsNum}" }
+private List<ObjectTable<ClientElecBill>.LinkColumn> linkColumns = new List<ObjectTable<ClientElecBill>.LinkColumn>
+{
+        new ObjectTable<ClientElecBill>.LinkColumn { Text = "جزئیات مشترک", FieldName = nameof(ClientElecBill.SubscriberId), Link = "/subscribers/details/{"+nameof(ClientElecBill.SubscriberId) +"}" }
     };
 
-    private List<City> cities;
-    private List<string> yearPeriods;
-    private string selectedCity = "all";
-    private string selectedYearPeriod;
-    private List<ClientElecBill> bills;
+private List<City> cities;
+private List<string> yearPeriods;
+private string selectedCity = "all";
+private string selectedYearPeriod;
+private List<ClientElecBill> bills;
 
-    protected override async Task OnInitializedAsync()
+protected override async Task OnInitializedAsync()
+{
+    cities = await http.GetFromJsonAsync<List<City>>("Place/CitiesList");
+    yearPeriods = await http.GetFromJsonAsync<List<string>>("Bills/YearPeriods");
+    if (yearPeriods != null && yearPeriods.Count > 0)
     {
-        cities = await http.GetFromJsonAsync<List<City>>("Place/CitiesList");
-        yearPeriods = await http.GetFromJsonAsync<List<string>>("Bills/YearPeriods");
-        if (yearPeriods != null && yearPeriods.Count > 0)
-        {
-            selectedYearPeriod = yearPeriods[0];
-            await RefreshList();
-        }
+        selectedYearPeriod = yearPeriods[0];
+        await RefreshList();
     }
+}
 
-    private async Task RefreshList()
-    {
-        bills = null;
-        bills = await http.GetFromJsonAsync<List<ClientElecBill>>("Bills/List?city=" + selectedCity + "&yearPeriod=" + selectedYearPeriod);
-    }
+private async Task RefreshList()
+{
+    bills = null;
+    bills = await http.GetFromJsonAsync<List<ClientElecBill>>("Bills/List?city=" + selectedCity + "&yearPeriod=" + selectedYearPeriod);
+}
 
-    private async Task DownloadExcelFile()
-    {
-        await http.DownloadFile("Bills/ExcelFile?city=" + selectedCity + "&yearPeriod=" + selectedYearPeriod);
-    }
+private async Task DownloadExcelFile()
+{
+    await http.DownloadFile("Bills/ExcelFile?city=" + selectedCity + "&yearPeriod=" + selectedYearPeriod);
+}
 }

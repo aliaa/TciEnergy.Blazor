@@ -1,15 +1,44 @@
 ﻿@page "/subscribers/details/{id}"
-@page "/subscribers/details/{subsNum:int}"
 
-<h3>SubscriberDetails</h3>
-Id: @id
-<br/>
-SubsNum: @subsNum
+@inject HttpClientX http
+@inject AuthenticationStateProvider _auth
+
+<div class="container">
+    <div class="d-flex">
+        <h3>جزئیات مشترک</h3>
+        @if(user != null && user.HasPermission(Permission.ChangeSubscribers))
+        {
+            <a href="/subscribers/edit/@id" class="btn btn-info mr-auto">ویرایش مشترک</a> 
+        }
+    </div>
+    
+    <EditSubscriber id="@id" DisableMode="true" />
+    <h3 class="mt-5">قبوض مشترک</h3>
+</div>
+<div class="mt-4">
+    @if (bills == null)
+    {
+        <Loading />
+    }
+    else
+    {
+        <div class="table-responsive">
+            <ObjectTable Data="bills" />
+        </div>
+    }
+</div>
 
 @code {
     [Parameter]
     public string id { get; set; }
 
-    [Parameter]
-    public int subsNum { get; set; }
+    private List<ClientElecBill> bills;
+    private ClientAuthUser user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var auth = (AuthStateProvider)_auth;
+        user = await auth.GetUser();
+        bills = await http.GetFromJsonAsync<List<ClientElecBill>>("Bills/BySubscriber?subscriber=" + id);
+    }
 }

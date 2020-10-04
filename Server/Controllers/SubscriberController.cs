@@ -66,7 +66,7 @@ namespace TciEnergy.Blazor.Server.Controllers
             return await CreateExcelFile(table, "Subscribers", "Subscribers.xlsx");
         }
 
-        //[Authorize(nameof(Permission.ChangeSubscribers))]
+        //[Authorize(nameof(Permission.ChangeSubscribers))] //TODO
         [HttpPost]
         public IActionResult Save(Subscriber item)
         {
