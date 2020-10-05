@@ -134,7 +134,7 @@ namespace TciEnergy.Blazor.Server.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<List<ElecSubscriberSummary>>> TopUsageSubscribers(bool mainCity, int count = 10)
+        public async Task<ActionResult<TopSubscribers>> TopUsageSubscribers(bool mainCity, int count = 10)
         {
             FilterDefinition<ElecBill> citiesFilter;
             var fb = Builders<ElecBill>.Filter;
@@ -146,9 +146,9 @@ namespace TciEnergy.Blazor.Server.Controllers
             var lastPeriod = db.Find(citiesFilter).SortByDescending(b => b.Year).ThenByDescending(b => b.Period)
                 .Project(b => new { b.Year, b.Period }).FirstOrDefault();
             if (lastPeriod == null)
-                return new List<ElecSubscriberSummary>();
+                return new TopSubscribers();
 
-            var result = await db.Aggregate<ElecBill>()
+            var list = await db.Aggregate<ElecBill>()
                 .Match(citiesFilter)
                 .Match(b => b.Year == lastPeriod.Year && b.Period == lastPeriod.Period)
                 .Group(key => key.SubsNum, g => new ElecSubscriberSummary { SubsNum = g.Key, TotalSum = g.Sum(b => b.TotalPrice) })
@@ -156,7 +156,7 @@ namespace TciEnergy.Blazor.Server.Controllers
                 .Limit(count)
                 .ToListAsync();
 
-            foreach (var item in result)
+            foreach (var item in list)
             {
                 var subscriber = db.FindFirst<Subscriber>(s => s.ElecSub.ElecSubsNum == item.SubsNum);
                 if (subscriber != null)
@@ -165,7 +165,7 @@ namespace TciEnergy.Blazor.Server.Controllers
                     item.Id = subscriber.Id;
                 }
             }
-            return result;
+            return new TopSubscribers { List = list, Year = lastPeriod.Year, Period = lastPeriod.Period };
         }
     }
 }

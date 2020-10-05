@@ -64,7 +64,10 @@
             @if (topUsagesMainCity != null)
             {
                 <div class="card mt-4 bg-light">
-                    <div class="card-header text-center text-white bg-secondary">مشترکین پرمصرف @mainCity</div>
+                    <div class="card-header text-center text-white bg-secondary">
+                        مشترکین پرمصرف @mainCity <br/>
+                        (@topUsagesMainCity.Year دوره @topUsagesMainCity.Period)
+                    </div>
                     <div class="card-body">
                         <table class="table table-bordered table-striped table-sm">
                             <thead>
@@ -74,7 +77,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in topUsagesMainCity)
+                                @foreach (var item in topUsagesMainCity.List)
                                 {
                                     <tr>
                                         <td>
@@ -96,7 +99,10 @@
             @if (topUsagesOthers != null)
             {
                 <div class="card mt-4 bg-light">
-                    <div class="card-header text-center text-white bg-secondary">مشترکین پرمصرف سایر شهرستانها</div>
+                    <div class="card-header text-center text-white bg-secondary">
+                        مشترکین پرمصرف سایر شهرستانها<br/>
+                        (@topUsagesOthers.Year دوره @topUsagesOthers.Period)
+                    </div>
                     <div class="card-body">
                         <table class="table table-bordered table-striped table-sm">
                             <thead>
@@ -106,7 +112,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in topUsagesOthers)
+                                @foreach (var item in topUsagesOthers.List)
                                 {
                                     <tr>
                                         <td>
@@ -131,8 +137,8 @@
 @code {
     private string mainCity;
     private List<ElecBillsTotalInformation> totalPrices;
-    private List<ElecSubscriberSummary> topUsagesMainCity;
-    private List<ElecSubscriberSummary> topUsagesOthers;
+    private TopSubscribers topUsagesMainCity;
+    private TopSubscribers topUsagesOthers;
 
 
     protected override async Task OnInitializedAsync()
@@ -140,7 +146,7 @@
         var city = await http.GetFromJsonAsync<City>("Place/MainCity");
         mainCity = city.Name;
         totalPrices = await http.GetFromJsonAsync<List<ElecBillsTotalInformation>>("Dashboard/TotalPrices");
-        topUsagesMainCity = await http.GetFromJsonAsync<List<ElecSubscriberSummary>>("Dashboard/TopUsageSubscribers?mainCity=true");
-        topUsagesOthers = await http.GetFromJsonAsync<List<ElecSubscriberSummary>>("Dashboard/TopUsageSubscribers?mainCity=false");
+        topUsagesMainCity = await http.GetFromJsonAsync<TopSubscribers>("Dashboard/TopUsageSubscribers?mainCity=true");
+        topUsagesOthers = await http.GetFromJsonAsync<TopSubscribers>("Dashboard/TopUsageSubscribers?mainCity=false");
     }
 }
