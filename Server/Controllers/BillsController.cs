@@ -8,6 +8,7 @@ using MongoDB.Bson;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 using AliaaCommon;
+using Microsoft.AspNetCore.Http;
 
 namespace TciEnergy.Blazor.Server.Controllers
 {
@@ -89,6 +90,11 @@ namespace TciEnergy.Blazor.Server.Controllers
             var list = (await List(city, yearPeriod)).Value;
             var table = tableFactory.Create(list, excludeColumns: new string[] { nameof(ClientElecBill.Id), nameof(ClientElecBill.CityId) });
             return await CreateExcelFile(table, yearPeriod, "ElecBills.xlsx");
+        }
+
+        public async Task<IActionResult> UploadExcel(IFormFile file)
+        {
+            return Ok(file.Name);
         }
     }
 }

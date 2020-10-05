@@ -2,7 +2,9 @@
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -134,6 +136,31 @@ namespace TciEnergy.Blazor.Client
 
             protected HttpResponseException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) 
                 : base(serializationInfo, streamingContext) { }
+        }
+
+        public async Task<Res> UploadFile<Res>(string requestUri, Stream stream, string fileName)
+        {
+            var content = new MultipartFormDataContent();
+            content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
+            content.Add(new StreamContent(stream, Convert.ToInt32(stream.Length)), "file", fileName);
+
+            HttpResponseMessage resp;
+            try
+            {
+                resp = await PostAsync(requestUri, content);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("Errr on UploadFile", ex);
+            }
+            if (resp.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                nav.NavigateTo("/login");
+                return default;
+            }
+            else if ((int)resp.StatusCode >= 400)
+                throw await CreateHttpResponseException(resp);
+            return await resp.Content.ReadFromJsonAsync<Res>(jsonOptions);
         }
     }
 }

@@ -1,8 +1,40 @@
 ﻿@page "/bills/elec/import"
 @attribute [Authorize(nameof(Permission.ImportBills))]
 
-<h3>ElecBillsImport</h3>
+@inject HttpClientX http
+@inject IToastService toast
+
+@using BlazorInputFile
+
+<div class="container">
+    @if (loading)
+    {
+        <Loading />
+    }
+    else
+    {
+        <div class="form-group">
+            <label>فایل اکسل ورودی</label>
+            <InputFile OnChange="HandleFileSelection" />
+        </div>
+    }
+</div>
 
 @code {
 
+    private bool loading = false;
+
+    private async Task HandleFileSelection(IFileListEntry[] files)
+    {
+        var file = files.FirstOrDefault();
+        if (!file.Name.EndsWith(".xlsx"))
+        {
+            toast.ShowError("فایل وارد شده بایستی با پسوند xlsx باشد!");
+            return;
+        }
+        loading = true;
+        var response = await http.UploadFile<string>("Bills/UploadExcel", file.Data, file.Name);
+        toast.ShowSuccess(response);
+        loading = false;
+    }
 }
