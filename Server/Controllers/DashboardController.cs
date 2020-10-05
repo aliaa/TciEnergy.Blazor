@@ -67,9 +67,9 @@ namespace TciEnergy.Blazor.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ElecBillsTotalInformation>>> TotalPrices()
+        public async Task<ActionResult<List<PeriodTotalInformation>>> TotalPrices()
         {
-            var result = new List<ElecBillsTotalInformation>();
+            var result = new List<PeriodTotalInformation>();
             var mainCityPeriods = await AggregateOnPeriods(true);
             var othersPeriods = await AggregateOnPeriods(false);
             if (mainCityPeriods.Count == 0 && othersPeriods.Count == 0)
@@ -90,7 +90,7 @@ namespace TciEnergy.Blazor.Server.Controllers
             var current = bigger.Latest;
             for (int i = 0; i < 6; i++)
             {
-                result.Add(new ElecBillsTotalInformation
+                result.Add(new PeriodTotalInformation
                 {
                     Year = current.Year,
                     Period = current.Period,
@@ -151,8 +151,8 @@ namespace TciEnergy.Blazor.Server.Controllers
             var list = await db.Aggregate<ElecBill>()
                 .Match(citiesFilter)
                 .Match(b => b.Year == lastPeriod.Year && b.Period == lastPeriod.Period)
-                .Group(key => key.SubsNum, g => new ElecSubscriberSummary { SubsNum = g.Key, TotalSum = g.Sum(b => b.TotalPrice) })
-                .SortByDescending(x => x.TotalSum)
+                .Group(key => key.SubsNum, g => new SubscriberUsage { SubsNum = g.Key, Sum = g.Sum(b => b.TotalPrice) })
+                .SortByDescending(x => x.Sum)
                 .Limit(count)
                 .ToListAsync();
 

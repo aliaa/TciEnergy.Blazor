@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TciEnergy.Blazor.Shared.Models
 {
-    public class ElecSubscriberSummary
+    public class SubscriberUsage
     {
         public ObjectId Id { get; set; }
 
@@ -15,6 +15,6 @@ namespace TciEnergy.Blazor.Shared.Models
         public int SubsNum { get; set; }
 
         [Display(Name = "جمع")]
-        public long TotalSum { get; set; }
+        public long Sum { get; set; }
     }
 }

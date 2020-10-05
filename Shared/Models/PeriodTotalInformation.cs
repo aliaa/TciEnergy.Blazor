@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TciEnergy.Blazor.Shared.Models
 {
-    public class ElecBillsTotalInformation
+    public class PeriodTotalInformation
     {
         public int Year { get; set; }
         public int Period { get; set; }
