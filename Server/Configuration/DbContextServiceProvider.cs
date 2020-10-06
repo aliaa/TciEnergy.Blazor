@@ -32,7 +32,7 @@ namespace TciEnergy.Blazor.Server.Configuration
             var provinceDb = new MongoDbContext(provinceDbInfo.DBName, provinceDbInfo.ConnectionSettings);
 
             var dbs = new ProvinceDBs { CommonDb = provinceDb };
-            foreach (var p in provinceDb.FindGetResults<Province>(p => p.Applications.Contains("PM")))
+            foreach (var p in provinceDb.FindGetResults<Province>(p => p.Applications.Contains("Energy")))
             {
                 var db = new MongoDbContext(dbName + "-" + p.Prefix, connString,
                     customConnections: customConnections,

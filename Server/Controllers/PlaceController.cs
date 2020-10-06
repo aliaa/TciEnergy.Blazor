@@ -20,7 +20,7 @@ namespace TciEnergy.Blazor.Server.Controllers
 
         public ActionResult<List<TextValue>> ProvinceList()
         {
-            return dbs.CommonDb.Find<Province>(_ => true).SortBy(p => p.Name)
+            return dbs.CommonDb.Find<Province>(p => p.Applications.Contains("Energy")).SortBy(p => p.Name)
                 .ToEnumerable().Select(p => new TextValue { Text = p.Name, Value = p.Prefix }).ToList();
         }
 
