@@ -36,7 +36,13 @@
 @code {
     private List<ObjectTable<ClientSubscriber>.LinkColumn> linkColumns = new List<ObjectTable<ClientSubscriber>.LinkColumn>
     {
-        new ObjectTable<ClientSubscriber>.LinkColumn { Text = "جزئیات", FieldName = nameof(ClientSubscriber.Id), Link = "/subscribers/details/{Id}" }
+        new ObjectTable<ClientSubscriber>.LinkColumn 
+        { 
+            Name = "SubscriberDetails",
+            Text = "جزئیات", 
+            KeyFieldName = nameof(ClientSubscriber.Id), 
+            Link = "/subscribers/details/{Id}" 
+        }
     };
 
     private City mainCity;
@@ -52,8 +58,9 @@
         {
             linkColumns.Add(new ObjectTable<ClientSubscriber>.LinkColumn
             {
+                Name = "EditSubscriber",
                 Text = "ویرایش",
-                FieldName = nameof(ClientSubscriber.Id),
+                KeyFieldName = nameof(ClientSubscriber.Id),
                 Link = "/subscribers/edit/{Id}"
             });
         }

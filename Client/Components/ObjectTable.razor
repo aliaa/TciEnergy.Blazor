@@ -10,6 +10,13 @@
                     <th></th>
                 }
             }
+            @if (ActionColumns != null)
+            {
+                for (int i = 0; i < ActionColumns.Length; i++)
+                {
+                    <th></th>
+                }
+            }
             @foreach (var f in Fields)
             {
                 <th>@(UtilsX.DisplayName(f))</th>
@@ -25,8 +32,18 @@
                 {
                     @foreach (var col in LinkColumns)
                     {
-
-                        <td><a href="@(col.Link.Replace("{" + col.FieldName + "}", col.Field.GetValue(item).ToString()))">@col.Text</a></td>
+                        <td>
+                            <a href="@(col.Link.Replace("{" + col.KeyFieldName + "}", col.KeyField.GetValue(item).ToString()))">@col.Text</a>
+                        </td>
+                    }
+                }
+                @if (ActionColumns != null)
+                {
+                    @foreach (var col in ActionColumns)
+                    {
+                        <td>
+                            <button class="btn btn-primary btn-sm" @onclick="() => HandleActionClick(col.Name, item)">@col.Text</button>
+                        </td>
                     }
                 }
                 @foreach (var f in Fields)
@@ -59,21 +76,26 @@
 
 @code {
 
-    public class LinkColumn
+    public class Column
     {
+        public string Name { get; set; }
         public string Text { get; set; }
+    }
+
+    public class LinkColumn : Column
+    {
         public string Link { get; set; }
-        public string FieldName { get; set; }
+        public string KeyFieldName { get; set; }
 
-        private System.Reflection.PropertyInfo _field = null;
+        private System.Reflection.PropertyInfo _keyField = null;
 
-        public System.Reflection.PropertyInfo Field
+        public System.Reflection.PropertyInfo KeyField
         {
             get
             {
-                if (_field == null)
-                    _field = typeof(T).GetProperty(FieldName);
-                return _field;
+                if (_keyField == null)
+                    _keyField = typeof(T).GetProperty(KeyFieldName);
+                return _keyField;
             }
         }
     }
@@ -91,17 +113,23 @@
     public LinkColumn[] LinkColumns { get; set; }
 
     [Parameter]
+    public Column[] ActionColumns { get; set; }
+
+    [Parameter]
     public Dictionary<string, List<string>> ColumnsBackColor { get; set; }
 
     [Parameter]
     public bool ShortDates { get; set; } = true;
+
+    [Parameter]
+    public EventCallback<KeyValuePair<string, T>> OnActionClick { get; set; }
 
     private List<System.Reflection.PropertyInfo> Fields;
 
     private static readonly Type[] AllowedTypes = new Type[]
     {
         typeof(int), typeof(string), typeof(float), typeof(long), typeof(int?)
-    };
+        };
 
     protected override void OnInitialized()
     {
@@ -131,5 +159,10 @@
             dic.Add("style", "background-color: " + ColumnsBackColor[col][index] + ";");
         }
         return dic;
+    }
+
+    private async Task HandleActionClick(string col, T item)
+    {
+        await OnActionClick.InvokeAsync(new KeyValuePair<string, T>(col, item));
     }
 }

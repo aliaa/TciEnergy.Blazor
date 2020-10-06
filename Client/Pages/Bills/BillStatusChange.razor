@@ -1,0 +1,48 @@
+﻿@inject HttpClientX http
+@inject IToastService toast
+
+<div>
+    <div>
+        <label>وضعیت کنونی:</label>
+        <b>@UtilsX.DisplayName(Bill.PayStatus)</b>
+    </div>
+    @if (Bill.PayStatus != ElecBill.PayStatusEnum.Documented)
+    {
+        <div class="mt-4 text-center">
+            <button class="btn btn-primary" @onclick="ChangeStatus">
+                تغییر وضعیت به @UtilsX.DisplayName(NextStatus())
+            </button>
+        </div>
+    }
+</div>
+
+@code {
+    [CascadingParameter]
+    BlazoredModalInstance modal { get; set; }
+
+    [Parameter]
+    public ClientElecBill Bill { get; set; }
+
+
+    private ElecBill.PayStatusEnum NextStatus()
+    {
+        switch (Bill.PayStatus)
+        {
+            case ElecBill.PayStatusEnum.NotPaid:
+                return ElecBill.PayStatusEnum.Paid;
+            default:
+                return ElecBill.PayStatusEnum.Documented;
+        }
+    }
+
+    private async Task ChangeStatus()
+    {
+        var res = await http.GetAsync("Bills/ChangePayStatus?id=" + Bill.Id + "&newStatus=" + NextStatus());
+        if (res.IsSuccessStatusCode)
+            toast.ShowSuccess("وضعیت قبض تغییر یافت!");
+        else
+            toast.ShowError("خطا در تغییر وضعیت پرداخت!");
+
+        await modal.Close(ModalResult.Ok(res.IsSuccessStatusCode));
+    }
+}

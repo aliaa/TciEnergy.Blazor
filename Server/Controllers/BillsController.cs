@@ -92,6 +92,19 @@ namespace TciEnergy.Blazor.Server.Controllers
             return await CreateExcelFile(table, yearPeriod, "ElecBills.xlsx");
         }
 
+        public IActionResult ChangePayStatus(ObjectId id, ElecBill.PayStatusEnum newStatus)
+        {
+            var bill = db.FindById<ElecBill>(id);
+            if (bill == null)
+                return BadRequest("id not found");
+            if (bill.PayStatus == ElecBill.PayStatusEnum.NotPaid && newStatus != ElecBill.PayStatusEnum.Paid)
+                return BadRequest("newStatus != " + ElecBill.PayStatusEnum.Paid);
+            if (bill.PayStatus == ElecBill.PayStatusEnum.Paid && newStatus != ElecBill.PayStatusEnum.Documented)
+                return BadRequest("newStatus != " + ElecBill.PayStatusEnum.Documented);
+            db.UpdateOne<ElecBill>(b => b.Id == id, Builders<ElecBill>.Update.Set(b => b.PayStatus, newStatus));
+            return Ok();
+        }
+
         public async Task<IActionResult> UploadExcel(IFormFile file)
         {
             return Ok(file.Name);

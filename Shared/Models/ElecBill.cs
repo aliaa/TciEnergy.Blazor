@@ -1,19 +1,32 @@
 ﻿using EasyMongoNet;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace TciEnergy.Blazor.Shared.Models
 {
     [CollectionIndex(new string[] { nameof(SubsNum) })]
     public class ElecBill : MongoEntity
     {
+        public enum PayStatusEnum
+        {
+            [Display(Name = "پرداخت نشده")]
+            NotPaid,
+            [Display(Name = "پرداخت شده")]
+            Paid,
+            [Display(Name = "سند زده شده")]
+            Documented,
+        }
+
         [Display(Name = "شماره اشتراک")]
         public int SubsNum { get; set; }
 
         public ObjectId CityId { get; set; }
+
+        [BsonRepresentation(BsonType.String)]
+        [Display(Name = "وضعیت پرداخت")]
+        public PayStatusEnum PayStatus { get; set; }
 
         private int _year;
         [Display(Name = "سال")]
