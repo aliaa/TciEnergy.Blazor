@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 using AliaaCommon;
 using Microsoft.AspNetCore.Http;
+using System.IO;
+using OfficeOpenXml;
+using System;
 
 namespace TciEnergy.Blazor.Server.Controllers
 {
@@ -67,7 +70,7 @@ namespace TciEnergy.Blazor.Server.Controllers
                 .AppendStage<FakeClientElecBill>("{$addFields: { " + nameof(ClientElecBill.SubscriberName) + " : \"$" + nameof(FakeClientElecBill.Subscriber) + "." + nameof(Subscriber.Name) + "\" }}")
                 .AppendStage<FakeClientElecBill>("{$addFields: { " + nameof(ClientElecBill.SubscriberId) + " : \"$" + nameof(FakeClientElecBill.Subscriber) + "._id" + "\" }}")
                 .Project<ClientElecBill>(Builders<FakeClientElecBill>.Projection.Exclude(x => x.Subscriber));
-            
+
             var list = await agg2.ToListAsync();
             var citiesDic = Cities.ToDictionary(k => k.Id, v => v.Name);
             foreach (var item in list)
@@ -105,9 +108,58 @@ namespace TciEnergy.Blazor.Server.Controllers
             return Ok();
         }
 
-        public async Task<IActionResult> UploadExcel(IFormFile file)
+        public async Task<UploadExcelResult> UploadExcel(IFormFile file)
         {
-            return Ok(file.Name);
+            var fileName = Path.GetTempFileName();
+            FileInfo finfo = new FileInfo(fileName);
+            finfo.Attributes = FileAttributes.Temporary;
+            using var uploadedStream = file.OpenReadStream();
+            using var memoryStream = new MemoryStream((int)file.Length);
+            await uploadedStream.CopyToAsync(memoryStream);
+            uploadedStream.Close();
+
+            memoryStream.Position = 0;
+            using var fileStream = finfo.OpenWrite();
+            await memoryStream.CopyToAsync(fileStream);
+            await fileStream.FlushAsync();
+            fileStream.Close();
+
+            memoryStream.Position = 0;
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using var excel = new ExcelPackage(memoryStream);
+            var sheet = excel.Workbook.Worksheets[excel.Compatibility.IsWorksheets1Based ? 1 : 0];
+            var result = new UploadExcelResult { FileName = finfo.Name };
+            result.Headers = Enumerable.Range(1, sheet.Dimension.Columns)
+                .Select(col => new { col, text = sheet.GetValue<string>(1, col) })
+                .Where(h => !string.IsNullOrEmpty(h.text))
+                .Select(h => new UploadExcelResult.Header 
+                { 
+                    ColumnIndex = h.col, 
+                    Text = h.text, 
+                    BestSimilarField = BillFields[GetBestSimilarField(BillFields.Keys, h.text)]
+                })
+                .ToList();
+            return result;
+        }
+
+        private static readonly Dictionary<string, string> BillFields = typeof(ElecBill).GetProperties()
+            .Where(p => p.Name != nameof(ElecBill.Id) && p.Name != nameof(ElecBill.CityId) && p.CanWrite)
+            .ToDictionary(k => AliaaCommon.Utils.DisplayName(k), v => v.Name);
+
+        private string GetBestSimilarField(IEnumerable<string> fields, string compareTo)
+        {
+            float bestSimilarity = 0;
+            string best = fields.FirstOrDefault();
+            foreach (var f in fields)
+            {
+                float sim = AliaaCommon.Utils.GetSimilarityRateOfStrings(f, compareTo);
+                if(sim > bestSimilarity)
+                {
+                    bestSimilarity = sim;
+                    best = f;
+                }
+            }
+            return best;
         }
     }
 }

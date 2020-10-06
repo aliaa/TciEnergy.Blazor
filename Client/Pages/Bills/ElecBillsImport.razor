@@ -11,11 +11,34 @@
     {
         <Loading />
     }
-    else
+    else if (uploadResult == null)
     {
         <div class="form-group">
             <label>فایل اکسل ورودی</label>
-            <InputFile OnChange="HandleFileSelection" />
+            <InputFile OnChange="HandleFileSelection" class="mr-2" />
+        </div>
+        <div>
+            <small class="text-muted">توجه: فقط اولین شیت فایل اکسل بررسی خواهد شد!</small>
+        </div>
+    }
+    else
+    {
+        <h4>لطفا ستون مربوط به هر فیلد قبض را انتخاب نمائید</h4>
+        <div class="row mt-5">
+            @foreach (var prop in BillFields.Keys)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="form-group">
+                        <label>@BillFields[prop]</label>
+                        <select @onchange="(v) => ColumnFieldSelected(prop, int.Parse(v.Value.ToString()))" class="form-control">
+                            @foreach (var header in uploadResult.Headers)
+                            {
+                                <option value="@header.ColumnIndex" selected="@(header.BestSimilarField == prop)">@header.Text</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            }
         </div>
     }
 </div>
@@ -23,18 +46,32 @@
 @code {
 
     private bool loading = false;
+    private UploadExcelResult uploadResult;
+    private Dictionary<int, string> selectedColumns = new Dictionary<int, string>();
+
+    private static readonly Dictionary<string, string> BillFields = typeof(ElecBill).GetProperties()
+        .Where(p => p.Name != nameof(ElecBill.Id) && p.Name != nameof(ElecBill.CityId) && p.CanWrite)
+        .ToDictionary(k => k.Name, v => UtilsX.DisplayName(v));
 
     private async Task HandleFileSelection(IFileListEntry[] files)
     {
         var file = files.FirstOrDefault();
         if (!file.Name.EndsWith(".xlsx"))
         {
-            toast.ShowError("فایل وارد شده بایستی با پسوند xlsx باشد!");
+            toast.ShowError("فایل وارد شده بایستی فایل اکسل با پسوند xlsx باشد!");
             return;
         }
         loading = true;
-        var response = await http.UploadFile<string>("Bills/UploadExcel", file.Data, file.Name);
-        toast.ShowSuccess(response);
+        uploadResult = await http.UploadFile<UploadExcelResult>("Bills/UploadExcel", file.Data, file.Name);
         loading = false;
+
+    }
+
+    private void ColumnFieldSelected(string field, int columnIndex)
+    {
+        if (selectedColumns.ContainsKey(columnIndex))
+            selectedColumns[columnIndex] = field;
+        else
+            selectedColumns.Add(columnIndex, field);
     }
 }
