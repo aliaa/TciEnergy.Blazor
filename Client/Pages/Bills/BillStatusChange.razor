@@ -37,10 +37,9 @@
 
     private async Task ChangeStatus()
     {
-        var res = await http.GetAsync("Bills/ChangePayStatus?id=" + Bill.Id + "&newStatus=" + NextStatus());
-        if (res.IsSuccessStatusCode)
-            toast.ShowSuccess("وضعیت قبض تغییر یافت!");
-        else
+        Bill.PayStatus = NextStatus();
+        var res = await http.GetAsync("Bills/ChangePayStatus?id=" + Bill.Id + "&newStatus=" + Bill.PayStatus);
+        if (!res.IsSuccessStatusCode)
             toast.ShowError("خطا در تغییر وضعیت پرداخت!");
 
         await modal.Close(ModalResult.Ok(res.IsSuccessStatusCode));

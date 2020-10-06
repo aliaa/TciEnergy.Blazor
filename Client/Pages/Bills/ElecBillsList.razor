@@ -85,6 +85,7 @@
     private async Task RefreshList()
     {
         bills = null;
+        StateHasChanged();
         bills = await http.GetFromJsonAsync<List<ClientElecBill>>("Bills/List?city=" + selectedCity + "&yearPeriod=" + selectedYearPeriod);
         ColumnsBackColor = new Dictionary<string, List<string>>();
         var colorsList = new List<string>(bills.Count);
@@ -116,11 +117,7 @@
             var changeStatusModal = modal.Show<BillStatusChange>("تغییر وضعیت پرداخت", param);
             var result = await changeStatusModal.Result;
             if (!result.Cancelled)
-            {
-                bills = null;
-                StateHasChanged();
                 await RefreshList();
-            }
         }
     }
 }
