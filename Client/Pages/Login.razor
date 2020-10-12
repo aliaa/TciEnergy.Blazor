@@ -19,7 +19,7 @@
     <EditForm Model="model" OnValidSubmit="CheckLogin">
         <DataAnnotationsValidator />
         <div class="row mt-5">
-            <div class="col-lg-3 col-sm-6">
+            <div class="col-lg-4 col-sm-8">
                 <div class="form-group">
                     <Label For="@(()=> model.Username)" />
                     <InputText type="text" @bind-Value="model.Username" class="form-control" />
@@ -47,6 +47,10 @@
                     <ValidationSummary />
                     <div class="form-group">
                         <input type="submit" class="btn btn-primary" value="ورود" />
+                        @if (unauthorized)
+                        {
+                            <span class="mr-4 text-danger">خطا: اطلاعات ورود صحیح نیست!</span>
+                        }
                     </div>
                 }
             </div>
@@ -59,6 +63,7 @@
     public string state { get; set; }
     private LoginVM model = new LoginVM();
     private List<TextValue> provinces = null;
+    private bool unauthorized = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -78,5 +83,6 @@
         {
             nav.NavigateTo("/");
         }
+        unauthorized = user == null;
     }
 }

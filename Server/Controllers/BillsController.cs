@@ -95,7 +95,7 @@ namespace TciEnergy.Blazor.Server.Controllers
             return await CreateExcelFile(table, yearPeriod, "ElecBills.xlsx");
         }
 
-        public IActionResult ChangePayStatus(ObjectId id, ElecBill.PayStatusEnum newStatus)
+        public IActionResult ChangePayStatus(ObjectId id, ElecBill.PayStatusEnum newStatus, long num)
         {
             var bill = db.FindById<ElecBill>(id);
             if (bill == null)
@@ -104,7 +104,13 @@ namespace TciEnergy.Blazor.Server.Controllers
                 return BadRequest("newStatus != " + ElecBill.PayStatusEnum.Paid);
             if (bill.PayStatus == ElecBill.PayStatusEnum.Paid && newStatus != ElecBill.PayStatusEnum.Documented)
                 return BadRequest("newStatus != " + ElecBill.PayStatusEnum.Documented);
-            db.UpdateOne<ElecBill>(b => b.Id == id, Builders<ElecBill>.Update.Set(b => b.PayStatus, newStatus));
+
+            var update = Builders<ElecBill>.Update.Set(b => b.PayStatus, newStatus);
+            if (newStatus == ElecBill.PayStatusEnum.Paid)
+                update = update.Set(b => b.PaymentNumber, num);
+            else if (newStatus == ElecBill.PayStatusEnum.Documented)
+                update = update.Set(b => b.DocumentNumber, num);
+            db.UpdateOne<ElecBill>(b => b.Id == id, update);
             return Ok();
         }
 

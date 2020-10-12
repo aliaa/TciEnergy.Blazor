@@ -142,5 +142,11 @@ namespace TciEnergy.Blazor.Shared.Models
 
         [Display(Name = "مبلغ قابل پرداخت")]
         public long TotalPrice { get; set; }
+
+        [Display(Name = "شماره رسید پرداخت")]
+        public long? PaymentNumber { get; set; }
+
+        [Display(Name = "شماره سند")]
+        public long? DocumentNumber { get; set; }
     }
 }

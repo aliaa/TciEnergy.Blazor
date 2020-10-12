@@ -2,10 +2,30 @@
 @inject IToastService toast
 
 <div>
-    <div>
-        <label>وضعیت کنونی:</label>
-        <b>@UtilsX.DisplayName(Bill.PayStatus)</b>
+    <div class="form-group row">
+        <label class="col-sm-5">وضعیت کنونی:</label>
+        <div class="col-sm-7">
+            <b>@UtilsX.DisplayName(Bill.PayStatus)</b>
+        </div>
     </div>
+    @if (Bill.PayStatus == ElecBill.PayStatusEnum.NotPaid)
+    {
+        <div class="form-group row">
+            <label class="col-sm-5">@(UtilsX.DisplayName<ElecBill>(b => b.PaymentNumber)):</label>
+            <div class="col-sm-7">
+                <input type="number" @bind-value="num" class="form-control" required />
+            </div>
+        </div>
+    }
+    else if (Bill.PayStatus == ElecBill.PayStatusEnum.Paid)
+    {
+        <div class="form-group row">
+            <label class="col-sm-5">@(UtilsX.DisplayName<ElecBill>(b => b.DocumentNumber)):</label>
+            <div class="col-sm-7">
+                <input type="number" @bind-value="num" class="form-control" required />
+            </div>
+        </div>
+    }
     @if (Bill.PayStatus != ElecBill.PayStatusEnum.Documented)
     {
         <div class="mt-4 text-center">
@@ -23,6 +43,7 @@
     [Parameter]
     public ClientElecBill Bill { get; set; }
 
+    private long num;
 
     private ElecBill.PayStatusEnum NextStatus()
     {
@@ -38,7 +59,7 @@
     private async Task ChangeStatus()
     {
         Bill.PayStatus = NextStatus();
-        var res = await http.GetAsync("Bills/ChangePayStatus?id=" + Bill.Id + "&newStatus=" + Bill.PayStatus);
+        var res = await http.GetAsync("Bills/ChangePayStatus?id=" + Bill.Id + "&newStatus=" + Bill.PayStatus + "&num=" + num);
         if (!res.IsSuccessStatusCode)
             toast.ShowError("خطا در تغییر وضعیت پرداخت!");
 
