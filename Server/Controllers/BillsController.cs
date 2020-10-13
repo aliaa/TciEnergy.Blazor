@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using OfficeOpenXml;
 using System;
+using System.Reflection;
 
 namespace TciEnergy.Blazor.Server.Controllers
 {
@@ -148,9 +149,11 @@ namespace TciEnergy.Blazor.Server.Controllers
             return result;
         }
 
-        private static readonly Dictionary<string, string> BillFields = typeof(ElecBill).GetProperties()
+        private static readonly PropertyInfo[] validProps = typeof(ElecBill).GetProperties()
             .Where(p => p.Name != nameof(ElecBill.Id) && p.Name != nameof(ElecBill.CityId) && p.CanWrite)
-            .ToDictionary(k => AliaaCommon.Utils.DisplayName(k), v => v.Name);
+            .ToArray();
+
+        private static readonly Dictionary<string, string> BillFields = validProps.ToDictionary(k => AliaaCommon.Utils.DisplayName(k), v => v.Name);
 
         private string GetBestSimilarField(IEnumerable<string> fields, string compareTo)
         {
@@ -166,6 +169,21 @@ namespace TciEnergy.Blazor.Server.Controllers
                 }
             }
             return best;
+        }
+
+        [HttpPost]
+        public ActionResult<List<string>> SubmitExcelColumns(SelectedExcelColumns req)
+        {
+            var errors = new List<string>();
+
+            var columnMap = req.SelectedColumns.Select(kv => new { Property = validProps.First(p => p.Name == kv.Key), Column = kv.Value })
+                .ToDictionary(a => a.Property, a => a.Column);
+
+            var billsDuplicateCheck = db.Aggregate<ElecBill>()
+                .Group(k => k.SubsNum, g => new { SubsNum = g.Key, Dates = g.Select(b => b.CurrentDate).ToList() })
+                .ToEnumerable().ToDictionary(a => a.SubsNum, a => a.Dates);
+
+            return errors;
         }
     }
 }

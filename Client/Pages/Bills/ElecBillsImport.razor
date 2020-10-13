@@ -29,7 +29,7 @@
             {
                 <div class="col-lg-3 col-md-4 col-sm-6">
                     <div class="form-group">
-                        <label>@BillFields[prop]</label>
+                        <label class="text-info">@BillFields[prop]</label>
                         <select @onchange="(v) => ColumnFieldSelected(prop, int.Parse(v.Value.ToString()))" class="form-control">
                             @foreach (var header in uploadResult.Headers)
                             {
@@ -40,6 +40,16 @@
                 </div>
             }
         </div>
+
+        <div class="mt-5">
+            <div class="form-group">
+                <input type="checkbox" id="chkRewrite" @bind-value="rewrite" />
+                <label  for="chkRewrite">بازنویسی قبوض در صورت تکراری بودن</label>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary" @onclick="SubmitSelectedColumns">تائید</button>
+            </div>
+        </div>
     }
 </div>
 
@@ -48,6 +58,7 @@
     private bool loading = false;
     private UploadExcelResult uploadResult;
     private Dictionary<string, int> selectedColumns = new Dictionary<string, int>();
+    private bool rewrite;
 
     private static readonly Dictionary<string, string> BillFields = typeof(ElecBill).GetProperties()
         .Where(p => p.Name != nameof(ElecBill.Id) && p.Name != nameof(ElecBill.CityId) && p.CanWrite)
@@ -72,5 +83,13 @@
             selectedColumns[field] = columnIndex;
         else
             selectedColumns.Add(field, columnIndex);
+    }
+
+    private async Task SubmitSelectedColumns()
+    {
+        loading = true;
+        var req = new SelectedExcelColumns { FileName = uploadResult.FileName, SelectedColumns = selectedColumns };
+        var res = await http.PostAsJsonAsync<SelectedExcelColumns, string>("Bills/SubmitExcelColumns", req);
+        loading = false;
     }
 }
