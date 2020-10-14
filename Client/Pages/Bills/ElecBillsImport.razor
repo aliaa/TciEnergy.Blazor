@@ -21,7 +21,7 @@
             <small class="text-muted">توجه: فقط اولین شیت فایل اکسل بررسی خواهد شد!</small>
         </div>
     }
-    else
+    else if (errors == null)
     {
         <h4>لطفا ستون مربوط به هر فیلد قبض را انتخاب نمائید</h4>
         <div class="row mt-5">
@@ -51,6 +51,21 @@
             </div>
         </div>
     }
+    else if (errors.Count > 0)
+    {
+        <h4>وارد سازی فایل با خطاهایی روبرو شد</h4>
+        <h6>لطفا خطاها را حل کرده و فایل را دوباره بارگزاری نمائید.</h6>
+        <ul class="text-danger">
+            @foreach (var error in errors)
+            {
+                <li>@error</li>
+            }
+        </ul>
+    }
+    else
+    {
+
+    }
 </div>
 
 @code {
@@ -59,6 +74,7 @@
     private UploadExcelResult uploadResult;
     private Dictionary<string, int> selectedColumns = new Dictionary<string, int>();
     private bool rewrite;
+    private List<string> errors = null;
 
     private static readonly Dictionary<string, string> BillFields = typeof(ElecBill).GetProperties()
         .Where(p => p.Name != nameof(ElecBill.Id) && p.Name != nameof(ElecBill.CityId) && p.CanWrite)
@@ -89,7 +105,7 @@
     {
         loading = true;
         var req = new SelectedExcelColumns { FileName = uploadResult.FileName, SelectedColumns = selectedColumns };
-        var res = await http.PostAsJsonAsync<SelectedExcelColumns, string>("Bills/SubmitExcelColumns", req);
+        errors = await http.PostAsJsonAsync<SelectedExcelColumns, List<string>>("Bills/SubmitExcelColumns", req);
         loading = false;
     }
 }
