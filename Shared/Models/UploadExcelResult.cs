@@ -9,6 +9,7 @@ namespace TciEnergy.Blazor.Shared.Models
             public int ColumnIndex { get; set; }
             public string Text { get; set; }
             public string BestSimilarField { get; set; }
+            public float SimilarityRate { get; set; }
         }
 
         public List<Header> Headers { get; set; }

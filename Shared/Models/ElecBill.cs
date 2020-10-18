@@ -3,12 +3,19 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Reflection;
 
 namespace TciEnergy.Blazor.Shared.Models
 {
     [CollectionIndex(new string[] { nameof(SubsNum) })]
     public class ElecBill : MongoEntity
     {
+        public static readonly PropertyInfo[] ValidImportProperties = typeof(ElecBill).GetProperties()
+            .Where(p => p.CanWrite && p.Name != nameof(Id) && p.Name != nameof(CityId) && 
+                p.Name != nameof(PayStatus) && p.Name != nameof(DocumentNumber) && p.Name != nameof(PaymentNumber))
+            .ToArray();
+
         public enum PayStatusEnum
         {
             [Display(Name = "پرداخت نشده")]

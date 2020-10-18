@@ -13,6 +13,7 @@ using System.Text.Json.Serialization;
 using System.Text.Unicode;
 using System.Threading.Tasks;
 using TciEnergy.Blazor.Shared;
+using TciEnergy.Blazor.Shared.Utils;
 
 namespace TciEnergy.Blazor.Server.Configuration
 {
@@ -60,6 +61,7 @@ namespace TciEnergy.Blazor.Server.Configuration
             {
                 options.JsonSerializerOptions.Converters.Add(new Shared.Utils.ObjectIdJsonConverter());
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                options.JsonSerializerOptions.Converters.Add(new DictionaryIntConverter());
             });
 
             services.AddRazorPages();

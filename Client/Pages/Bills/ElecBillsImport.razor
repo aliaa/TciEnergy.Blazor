@@ -23,17 +23,21 @@
     }
     else if (errors == null)
     {
-        <h4>لطفا ستون مربوط به هر فیلد قبض را انتخاب نمائید</h4>
+        <h4>لطفا فیلد مربوط به هر ستون را انتخاب نمائید</h4>
         <div class="row mt-5">
-            @foreach (var prop in BillFields.Keys)
+            @foreach (var header in uploadResult.Headers)
             {
                 <div class="col-lg-3 col-md-4 col-sm-6">
                     <div class="form-group">
-                        <label class="text-info">@BillFields[prop]</label>
-                        <select @onchange="(v) => ColumnFieldSelected(prop, int.Parse(v.Value.ToString()))" class="form-control">
-                            @foreach (var header in uploadResult.Headers)
+                        <label class="text-info">@header.Text</label>
+                        <select @onchange="(v) => ColumnFieldSelected(header.ColumnIndex, v.Value.ToString())" class="form-control">
+                            <option value="">-</option>
+                            @foreach (var field in BillFields)
                             {
-                                <option value="@header.ColumnIndex" selected="@(header.BestSimilarField == prop)">@header.Text</option>
+                                <option value="@field.Key"
+                                        selected="@(header.BestSimilarField == field.Key && header.SimilarityRate >= MIN_SIMILARITY_RATE)">
+                                    @field.Value
+                                </option>
                             }
                         </select>
                     </div>
@@ -44,41 +48,44 @@
         <div class="mt-5">
             <div class="form-group">
                 <input type="checkbox" id="chkRewrite" @bind-value="rewrite" />
-                <label  for="chkRewrite">بازنویسی قبوض در صورت تکراری بودن</label>
+                <label for="chkRewrite">بازنویسی قبوض در صورت تکراری بودن</label>
             </div>
             <div class="form-group">
                 <button class="btn btn-primary" @onclick="SubmitSelectedColumns">تائید</button>
             </div>
         </div>
     }
-    else if (errors.Count > 0)
+    
+    @if (errors != null)
     {
-        <h4>وارد سازی فایل با خطاهایی روبرو شد</h4>
-        <h6>لطفا خطاها را حل کرده و فایل را دوباره بارگزاری نمائید.</h6>
-        <ul class="text-danger">
-            @foreach (var error in errors)
-            {
-                <li>@error</li>
-            }
-        </ul>
-    }
-    else
-    {
-
+        if (errors.Count == 0)
+        {
+            <h4 class="mt-5 text-success">بارگزاری با موفقیت انجام شد!</h4>
+        }
+        else
+        {
+            <h4 class="mt-5 text-danger">وارد سازی فایل با خطاهایی روبرو شد</h4>
+            <h6 class="text-muted">لطفا خطاها را حل کرده و فایل را دوباره بارگزاری نمائید.</h6>
+            <ul class="mt-5 text-danger" style="columns:2;">
+                @foreach (var error in errors)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        }
     }
 </div>
 
 @code {
+    private const float MIN_SIMILARITY_RATE = 0.4f;
 
     private bool loading = false;
     private UploadExcelResult uploadResult;
-    private Dictionary<string, int> selectedColumns = new Dictionary<string, int>();
+    private Dictionary<int, string> selectedColumns = new Dictionary<int, string>();
     private bool rewrite;
     private List<string> errors = null;
 
-    private static readonly Dictionary<string, string> BillFields = typeof(ElecBill).GetProperties()
-        .Where(p => p.Name != nameof(ElecBill.Id) && p.Name != nameof(ElecBill.CityId) && p.CanWrite)
-        .ToDictionary(k => k.Name, v => UtilsX.DisplayName(v));
+    private static readonly Dictionary<string, string> BillFields = ElecBill.ValidImportProperties.ToDictionary(k => k.Name, v => UtilsX.DisplayName(v));
 
     private async Task HandleFileSelection(IFileListEntry[] files)
     {
@@ -89,23 +96,36 @@
             return;
         }
         loading = true;
-        uploadResult = await http.UploadFile<UploadExcelResult>("Bills/UploadExcel", file.Data, file.Name);
+        uploadResult = await http.UploadFile<UploadExcelResult>("BillsImport/UploadExcel", file.Data, file.Name);
+        foreach (var header in uploadResult.Headers)
+            if (header.SimilarityRate >= MIN_SIMILARITY_RATE)
+                ColumnFieldSelected(header.ColumnIndex, header.BestSimilarField);
+
         loading = false;
     }
 
-    private void ColumnFieldSelected(string field, int columnIndex)
+    private void ColumnFieldSelected(int columnIndex, string field)
     {
-        if (selectedColumns.ContainsKey(field))
-            selectedColumns[field] = columnIndex;
+        if (string.IsNullOrEmpty(field) || field == "-")
+        {
+            if (selectedColumns.ContainsKey(columnIndex))
+                selectedColumns.Remove(columnIndex);
+        }
         else
-            selectedColumns.Add(field, columnIndex);
+        {
+            if (selectedColumns.ContainsKey(columnIndex))
+                selectedColumns[columnIndex] = field;
+            else
+                selectedColumns.Add(columnIndex, field);
+        }
     }
 
     private async Task SubmitSelectedColumns()
     {
         loading = true;
         var req = new SelectedExcelColumns { FileName = uploadResult.FileName, SelectedColumns = selectedColumns };
-        errors = await http.PostAsJsonAsync<SelectedExcelColumns, List<string>>("Bills/SubmitExcelColumns", req);
+        errors = await http.PostAsJsonAsync<SelectedExcelColumns, List<string>>("BillsImport/SubmitExcelColumns", req);
+        uploadResult = null;
         loading = false;
     }
 }
