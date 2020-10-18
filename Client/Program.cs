@@ -21,6 +21,7 @@ namespace TciEnergy.Blazor.Client
 
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddBlazoredToast();
+            builder.Services.AddBlazoredModal();
 
             var address = new Uri(new Uri(builder.HostEnvironment.BaseAddress), "/api/");
             builder.Services.AddTransient(sp => new HttpClientX(sp.GetService<NavigationManager>(), sp.GetService<IJSRuntime>())
@@ -37,7 +38,6 @@ namespace TciEnergy.Blazor.Client
                     }));
                 options.AddPolicy("Admin", policy => policy.RequireClaim("IsAdmin", "true"));
             });
-            builder.Services.AddBlazoredModal();
 
             await builder.Build().RunAsync();
         }
