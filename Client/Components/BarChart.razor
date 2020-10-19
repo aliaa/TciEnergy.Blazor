@@ -17,14 +17,6 @@
     public List<ChartItem> Data { get; set; }
     private int height = 400;
 
-    public class ChartItem
-    {
-        public string Text { get; set; }
-        public double Value { get; set; }
-        public string ClickLink { get; set; }
-        public string Color { get; set; }
-    }
-
     private BarConfig config;
     private ChartJsBarChart chart;
     private BarDataset<DoubleWrapper> dataset;
@@ -67,7 +59,7 @@
 
         dataset = new BarDataset<DoubleWrapper>(ChartType.HorizontalBar)
         {
-            BackgroundColor = Data.Select(i => i.Color).ToArray()
+            BackgroundColor = Data.Select(i => i.Color ?? "#aaa").ToArray()
         };
         dataset.AddRange(Data.Select(i => i.Value).Wrap());
         config.Data.Datasets.Add(dataset);
