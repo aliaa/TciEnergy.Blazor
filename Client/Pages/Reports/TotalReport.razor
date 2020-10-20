@@ -48,7 +48,7 @@
                 <div class="form-group">
                     <Label For="() => model.Field" />
                     <InputSelect @bind-Value="model.Field" class="form-control">
-                        @foreach (var prop in billFields)
+                        @foreach (var prop in ElecBill.ValidReportProperties)
                         {
                             <option value="@prop.Name">@UtilsX.DisplayName(prop)</option>
                         }
@@ -85,11 +85,12 @@
     private List<City> cities;
     private List<string> periods;
 
-    private static readonly Type[] OperatableTypes = new Type[] { typeof(int), typeof(long), typeof(float), typeof(double) };
-    private static readonly System.Reflection.PropertyInfo[] billFields = ElecBill.ValidImportProperties
-        .Where(p => OperatableTypes.Contains(p.PropertyType)).ToArray();
-
-    private TotalReportRequest model = new TotalReportRequest();
+    private TotalReportRequest model = new TotalReportRequest
+    {
+        City = "all",
+        Field = ElecBill.ValidReportProperties[0].Name,
+        Period = "all"
+    };
     private List<ChartItem> data;
     private bool loading = false;
 

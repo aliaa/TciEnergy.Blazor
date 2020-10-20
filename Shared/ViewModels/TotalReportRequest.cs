@@ -23,10 +23,10 @@ namespace TciEnergy.Blazor.Shared.ViewModels
         }
 
         [Display(Name = "شهر")]
-        public string City { get; set; } = "all";
+        public string City { get; set; }
 
         [Display(Name = "دوره")]
-        public string Period { get; set; } = "all";
+        public string Period { get; set; }
 
         [Display(Name = "بر اساس")]
         public BasedOnEnum BasedOn { get; set; }

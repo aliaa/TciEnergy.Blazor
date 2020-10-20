@@ -16,6 +16,12 @@ namespace TciEnergy.Blazor.Shared.Models
                 p.Name != nameof(PayStatus) && p.Name != nameof(DocumentNumber) && p.Name != nameof(PaymentNumber))
             .ToArray();
 
+        private static readonly Type[] OperatableTypes = new Type[] { typeof(int), typeof(long), typeof(float), typeof(double) };
+        public static readonly PropertyInfo[] ValidReportProperties = ValidImportProperties
+            .Where(p => OperatableTypes.Contains(p.PropertyType))
+            .Where(p => p.Name != nameof(SubsNum) && p.Name != nameof(Year) && p.Name != nameof(Period) && p.Name != nameof(BillId))
+            .ToArray();
+
         public enum PayStatusEnum
         {
             [Display(Name = "پرداخت نشده")]
