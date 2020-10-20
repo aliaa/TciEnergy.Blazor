@@ -19,14 +19,14 @@ namespace TciEnergy.Blazor.Shared.ViewModels
             [Display(Name = "جمع")]
             Sum,
             [Display(Name = "میانگین")]
-            Average,
+            Avg,
         }
 
         [Display(Name = "شهر")]
-        public string City { get; set; }
+        public string City { get; set; } = "all";
 
         [Display(Name = "دوره")]
-        public string Period { get; set; }
+        public string Period { get; set; } = "all";
 
         [Display(Name = "بر اساس")]
         public BasedOnEnum BasedOn { get; set; }
