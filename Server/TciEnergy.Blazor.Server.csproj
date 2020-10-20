@@ -17,6 +17,7 @@
     <ProjectReference Include="..\..\..\EasyMongoNet\Driver\EasyMongoNet.Driver.csproj" />
     <ProjectReference Include="..\..\TciCommon\TciCommon.Models\TciCommon.Models.csproj" />
     <ProjectReference Include="..\..\TciCommon\TciCommon.ServerUtils\TciCommon.ServerUtils.csproj" />
+    <ProjectReference Include="..\Client\TciEnergy.Blazor.Client.csproj" />
     <ProjectReference Include="..\Shared\TciEnergy.Blazor.Shared.csproj" />
   </ItemGroup>
 
