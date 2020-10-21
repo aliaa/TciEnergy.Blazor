@@ -122,6 +122,13 @@
 
     private async Task SubmitSelectedColumns()
     {
+        var duplicates = selectedColumns.GroupBy(kv => kv.Value).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
+        if(duplicates.Count > 0)
+        {
+            var fieldName = UtilsX.DisplayName(typeof(ElecBill).GetProperty(duplicates[0]));
+            toast.ShowError($"در فیلدهای انتخاب شده \"{fieldName}\" بیش از یک بار انتخاب شده است!");
+            return;
+        }
         loading = true;
         var req = new SelectedExcelColumns { FileName = uploadResult.FileName, SelectedColumns = selectedColumns };
         errors = await http.PostAsJsonAsync<SelectedExcelColumns, List<string>>("BillsImport/SubmitExcelColumns", req);

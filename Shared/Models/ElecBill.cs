@@ -50,7 +50,7 @@ namespace TciEnergy.Blazor.Shared.Models
             {
                 if (value < 100)
                 {
-                    if (value >= 60)
+                    if (value >= 50)
                         _year = 1300 + value;
                     else
                         _year = 1400 + value;
@@ -68,6 +68,9 @@ namespace TciEnergy.Blazor.Shared.Models
 
         [Display(Name = "تاریخ فعلی")]
         public DateTime CurrentDate { get; set; }
+
+        [Display(Name = "تاریخ صدور")]
+        public DateTime IssuanceDate { get; set; }
 
         [Display(Name = "تعداد روز")]
         public int DayCount
@@ -93,32 +96,65 @@ namespace TciEnergy.Blazor.Shared.Models
         [Display(Name = "دیماند مصرفی")]
         public float ConsumedDemand { get; set; }
 
+        [Display(Name = "کنتور قبلی عادی")]
+        public int PreviousMediumCounter { get; set; }
+
+        [Display(Name = "کنتور قبلی اوج بار")]
+        public int PreviousHighCounter { get; set; }
+
+        [Display(Name = "کنتور قبلی کم بار")]
+        public int PreviousLowCounter { get; set; }
+
+        [Display(Name = "کنتور قبلی اوج جمعه")]
+        public int PreviousHighFridayCounter { get; set; }
+
+        [Display(Name = "کنتور قبلی راکتیو")]
+        public int PreviousReactiveCounter { get; set; }
+
+        [Display(Name = "کنتور فعلی عادی")]
+        public int CurrentMediumCounter { get; set; }
+
+        [Display(Name = "کنتور فعلی اوج بار")]
+        public int CurrentHighCounter { get; set; }
+
+        [Display(Name = "کنتور فعلی کم بار")]
+        public int CurrentLowCounter { get; set; }
+
+        [Display(Name = "کنتور فعلی اوج جمعه")]
+        public int CurrentHighFridayCounter { get; set; }
+
+        [Display(Name = "کنتور فعلی راکتیو")]
+        public int CurrentReactiveCounter { get; set; }
+
         [Display(Name = "مصرف کم بار")]
-        public int LowConsumption { get; set; }
+        public int LowConsumption => CurrentLowCounter - PreviousLowCounter;
+
+        [Display(Name = "مصرف میان بار")]
+        public int MediumConsumption => CurrentMediumCounter - PreviousMediumCounter;
+
+        [Display(Name = "مصرف اوج بار")]
+        public int HighConsumption => CurrentHighCounter - PreviousHighCounter;
+
+        [Display(Name = "مصرف اوج جمعه")]
+        public int HighConsumptionFriday => CurrentHighFridayCounter - PreviousHighFridayCounter;
+
+        [Display(Name = "مصرف راکتیو")]
+        public int ReactiveConsumption => CurrentReactiveCounter - PreviousReactiveCounter;
 
         [Display(Name = "مبلغ کم بار")]
         public int LowConsumptionPrice { get; set; }
 
-        [Display(Name = "مصرف میان بار")]
-        public int MediumConsumption { get; set; }
-
         [Display(Name = "مبلغ میان بار")]
         public int MediumConsumptionPrice { get; set; }
 
-        [Display(Name = "مصرف اوج بار")]
-        public int HighConsumption { get; set; }
-
         [Display(Name = "مبلغ اوج بار")]
         public int HighConsumptionPrice { get; set; }
-
-        [Display(Name = "مصرف راکتیو")]
-        public int ReactiveConsumption { get; set; }
 
         [Display(Name = "بهای مصرف راکتیو")]
         public int ReactiveConsumptionPrice { get; set; }
 
         [Display(Name = "جمع مصرف اکتیو")]
-        public int ActiveConsumptionSum { get; set; }
+        public int ActiveConsumptionSum => LowConsumption + MediumConsumption + HighConsumption;
 
         [Display(Name = "بهای مصرف اکتیو")]
         public int ActiveConsumptionPrice { get; set; }
@@ -138,17 +174,35 @@ namespace TciEnergy.Blazor.Shared.Models
         [Display(Name = "مبلغ مالیات")]
         public int TaxPrices { get; set; }
 
+        [Display(Name = "کسر هزار ریال")]
+        public int RoundingSubtraction { get; set; }
+
         [Display(Name = "مبلغ پیک فصل")]
         public int SeasonPeakPrice { get; set; }
 
         [Display(Name = "بهای تجاوز از قدرت")]
         public int PowerViolationPrice { get; set; }
 
+        [Display(Name = "ضریب زیان")]
+        public float LossCoefficient { get; set; }
+
+        [Display(Name = "نوع صورتحساب")]
+        public string InvoiceType { get; set; }
+
+        [Display(Name = "امور")]
+        public string Affairs { get; set; }
+
+        [Display(Name = "منطقه")]
+        public string Region { get; set; }
+
         [Display(Name = "مبلغ دوره")]
         public int PeriodPrice { get; set; }
 
         [Display(Name = "شناسه قبض")]
         public long BillId { get; set; }
+
+        [Display(Name = "شناسه پرداخت")]
+        public string PayId { get; set; }
 
         [Display(Name = "بدهی قبلی")]
         public long PreviousDept { get; set; }
@@ -161,5 +215,6 @@ namespace TciEnergy.Blazor.Shared.Models
 
         [Display(Name = "شماره سند")]
         public long? DocumentNumber { get; set; }
+
     }
 }
