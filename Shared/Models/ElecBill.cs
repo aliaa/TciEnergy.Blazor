@@ -157,7 +157,7 @@ namespace TciEnergy.Blazor.Shared.Models
         public int ActiveConsumptionSum => LowConsumption + MediumConsumption + HighConsumption;
 
         [Display(Name = "بهای مصرف اکتیو")]
-        public int ActiveConsumptionPrice { get; set; }
+        public int ActiveConsumptionPrice => LowConsumptionPrice + MediumConsumptionPrice + HighConsumptionPrice;
 
         [Display(Name = "بهای قدرت")]
         public int PowerPrice { get; set; }
@@ -210,11 +210,12 @@ namespace TciEnergy.Blazor.Shared.Models
         [Display(Name = "مبلغ قابل پرداخت")]
         public long TotalPrice { get; set; }
 
-        [Display(Name = "شماره رسید پرداخت")]
-        public long? PaymentNumber { get; set; }
 
         [Display(Name = "شماره سند")]
         public long? DocumentNumber { get; set; }
+
+        [Display(Name = "شماره رسید پرداخت")]
+        public long? PaymentNumber { get; set; }
 
     }
 }
