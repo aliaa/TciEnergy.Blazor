@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\AliaaCommon\AliaaCommonStandard\AliaaCommonStandard.csproj" />
     <ProjectReference Include="..\..\TciCommon\TciCommon.Models\TciCommon.Models.csproj" />
     <ProjectReference Include="..\Shared\TciEnergy.Blazor.Shared.csproj" />
   </ItemGroup>

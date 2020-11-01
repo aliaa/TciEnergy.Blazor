@@ -54,9 +54,25 @@
                         {
                             <input type="checkbox" disabled checked="@((bool)val)" />
                         }
-                        else if (val is DateTime && ShortDates)
+                        else if (val is DateTime || (val != null && val is DateTime?))
                         {
-                            @(((DateTime)val).ToShortDateString())
+                            if (val is DateTime?)
+                                val = ((DateTime?)val).Value;
+                            if (ConvertDatesToPersion)
+                            {
+                                @AliaaCommon.PersianDateUtils.GetPersianDateString((DateTime)val, !ShortDates);
+                            }
+                            else
+                            {
+                                if (ShortDates)
+                                {
+                                    @(((DateTime)val).ToShortDateString())
+                                }
+                                else
+                                {
+                                    @val
+                                }
+                            }
                         }
                         else if (f.PropertyType.IsEnum)
                         {
@@ -122,15 +138,20 @@
     public bool ShortDates { get; set; } = true;
 
     [Parameter]
+    public bool ConvertDatesToPersion { get; set; } = true;
+
+    [Parameter]
     public EventCallback<KeyValuePair<string, T>> OnActionClick { get; set; }
+
 
     private List<System.Reflection.PropertyInfo> Fields;
 
     private static readonly Type[] AllowedTypes = new Type[]
     {
-        typeof(string), typeof(int), typeof(long), typeof(float), typeof(double), 
-        typeof(int?), typeof(long?), typeof(float?), typeof(double?)
-    };
+        typeof(string), typeof(int), typeof(long), typeof(float), typeof(double),
+        typeof(int?), typeof(long?), typeof(float?), typeof(double?),
+        typeof(DateTime), typeof(DateTime?)
+            };
 
     protected override void OnInitialized()
     {

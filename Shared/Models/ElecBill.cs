@@ -70,7 +70,7 @@ namespace TciEnergy.Blazor.Shared.Models
         public DateTime CurrentDate { get; set; }
 
         [Display(Name = "تاریخ صدور")]
-        public DateTime IssuanceDate { get; set; }
+        public DateTime? IssuanceDate { get; set; }
 
         [Display(Name = "تعداد روز")]
         public int DayCount => (int)Math.Round((CurrentDate - PreviousDate).TotalDays);
@@ -152,6 +152,9 @@ namespace TciEnergy.Blazor.Shared.Models
 
         [Display(Name = "بهای مصرف اکتیو")]
         public int ActiveConsumptionPrice => LowConsumptionPrice + MediumConsumptionPrice + HighConsumptionPrice;
+
+        [Display(Name = "مصرف اکتیو روزانه")]
+        public float DailyActiveConsumption => ActiveConsumptionSum / DayCount;
 
         [Display(Name = "بهای قدرت")]
         public int PowerPrice { get; set; }
