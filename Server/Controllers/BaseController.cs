@@ -83,7 +83,7 @@ namespace TciEnergy.Blazor.Server.Controllers
             return File(file, "application/octet-stream", fileName);
         }
 
-        private static ObjectId _mainCityId;
+        private ObjectId _mainCityId;
         public ObjectId MainCityId
         {
             get

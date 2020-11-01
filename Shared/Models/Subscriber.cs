@@ -56,11 +56,6 @@ namespace TciEnergy.Blazor.Shared.Models
         public ConsumerTypeEnum ConsumerType { get; set; }
 
         public ElectricitySubscriber ElecSub { get; set; } = new ElectricitySubscriber();
-
-        //public static Subscriber FindByElecSubsNum(IReadOnlyDbContext db, int subsNum)
-        //{
-        //    return db.FindFirst<Subscriber>(s => s.ElecSub.ElecSubsNum == subsNum);
-        //}
     }
 
     public class ElectricitySubscriber

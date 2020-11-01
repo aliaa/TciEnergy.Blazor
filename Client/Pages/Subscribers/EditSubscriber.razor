@@ -181,7 +181,7 @@
     protected override async Task OnInitializedAsync()
     {
         if (DisableMode)
-            inputAttributes.Add("readonly", "");
+            inputAttributes.Add("disabled", "");
         if (id != null)
             model = await http.GetFromJsonAsync<Subscriber>("Subscriber/Item?id=" + id);
         cities = await http.GetFromJsonAsync<List<City>>("Place/CitiesList");

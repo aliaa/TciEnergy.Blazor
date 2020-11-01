@@ -73,13 +73,7 @@ namespace TciEnergy.Blazor.Shared.Models
         public DateTime IssuanceDate { get; set; }
 
         [Display(Name = "تعداد روز")]
-        public int DayCount
-        {
-            get
-            {
-                return (int)Math.Round((CurrentDate - PreviousDate).TotalDays);
-            }
-        }
+        public int DayCount => (int)Math.Round((CurrentDate - PreviousDate).TotalDays);
 
         [Display(Name = "ضریب قدرت")]
         public float PowerCoeficient { get; set; }
@@ -188,12 +182,6 @@ namespace TciEnergy.Blazor.Shared.Models
 
         [Display(Name = "نوع صورتحساب")]
         public string InvoiceType { get; set; }
-
-        [Display(Name = "امور")]
-        public string Affairs { get; set; }
-
-        [Display(Name = "منطقه")]
-        public string Region { get; set; }
 
         [Display(Name = "مبلغ دوره")]
         public int PeriodPrice { get; set; }
