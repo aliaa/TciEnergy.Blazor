@@ -70,7 +70,7 @@ namespace TciEnergy.Blazor.Shared.Models
         public DateTime CurrentDate { get; set; }
 
         [Display(Name = "تاریخ صدور")]
-        public DateTime? IssuanceDate { get; set; }
+        public DateTime IssuanceDate { get; set; }
 
         [Display(Name = "تعداد روز")]
         public int DayCount => (int)Math.Round((CurrentDate - PreviousDate).TotalDays);
@@ -193,7 +193,7 @@ namespace TciEnergy.Blazor.Shared.Models
         public long BillId { get; set; }
 
         [Display(Name = "شناسه پرداخت")]
-        public string PayId { get; set; }
+        public long PayId { get; set; }
 
         [Display(Name = "بدهی قبلی")]
         public long PreviousDept { get; set; }
