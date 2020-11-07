@@ -50,10 +50,10 @@ namespace TciEnergy.Blazor.Server.Controllers
             foreach (var h in headers)
             {
                 var similarField = GetBestSimilarField(BillFields.Keys, h.text, out float rate);
-                result.Headers.Add(new UploadExcelResult.Header 
-                { 
-                    Text = h.text, 
-                    ColumnIndex = h.col, 
+                result.Headers.Add(new UploadExcelResult.Header
+                {
+                    Text = h.text,
+                    ColumnIndex = h.col,
                     BestSimilarField = BillFields[similarField],
                     SimilarityRate = rate
                 });
@@ -83,6 +83,7 @@ namespace TciEnergy.Blazor.Server.Controllers
         public ActionResult<List<string>> SubmitExcelColumns(SelectedExcelColumns req)
         {
             var errors = new List<string>();
+            var saveList = new List<ElecBill>();
 
             var filePath = Path.Combine(Path.GetTempPath(), req.FileName);
             if (!System.IO.File.Exists(filePath))
@@ -105,7 +106,6 @@ namespace TciEnergy.Blazor.Server.Controllers
             int row = 2;
             while (row <= sheet.Dimension.Rows)
             {
-                bool hasError = false;
                 ElecBill obj = new ElecBill();
                 int subsNumCol = 1;
                 foreach (int col in columnMap.Keys)
@@ -169,28 +169,18 @@ namespace TciEnergy.Blazor.Server.Controllers
                     catch
                     {
                         errors.Add($"سلول {ColumnAlphabet(col)}{row} دارای مقدار نامعتبر است ({value}). ");
-                        hasError = true;
                     }
                 }
                 var subscriber = db.FindFirst<Subscriber>(s => s.ElecSub.ElecSubsNum == obj.SubsNum);
                 if (subscriber == null)
-                {
                     errors.Add($"سلول {ColumnAlphabet(subsNumCol)}{row}: مشترک با شماره اشتراک {obj.SubsNum} تعریف نشده است.");
-                    hasError = true;
-                }
-                else if (errors.Count == 0)
+                else
                 {
-                    if (req.OverwriteExistingBills)
-                    {
-                        db.DeleteOne<ElecBill>(eb => eb.Year == obj.Year && eb.Period == obj.Period && eb.SubsNum == obj.SubsNum);
-                    }
-                    else
+                    obj.CityId = subscriber.City;
+                    if (!req.OverwriteExistingBills)
                     {
                         if (billsDuplicateCheck.ContainsKey(obj.SubsNum) && billsDuplicateCheck[obj.SubsNum].Contains(obj.CurrentDate))
-                        {
                             errors.Add($"سطر {row}: قبض با شماره اشتراک {obj.SubsNum} و تاریخ فعلی {obj.CurrentDate.ToPersianDate()} قبلا موجود است!");
-                            hasError = true;
-                        }
                         else
                         {
                             if (billsDuplicateCheck.ContainsKey(obj.SubsNum))
@@ -199,13 +189,18 @@ namespace TciEnergy.Blazor.Server.Controllers
                                 billsDuplicateCheck.Add(obj.SubsNum, new List<DateTime> { obj.CurrentDate });
                         }
                     }
-                    if (!hasError)
-                    {
-                        obj.CityId = subscriber.City;
-                        db.Save(obj);
-                    }
                 }
+                if (errors.Count == 0)
+                    saveList.Add(obj);
                 row++;
+            }
+
+            if (errors.Count == 0)
+            {
+                if (req.OverwriteExistingBills)
+                    foreach (var obj in saveList)
+                        db.DeleteOne<ElecBill>(eb => eb.Year == obj.Year && eb.Period == obj.Period && eb.SubsNum == obj.SubsNum);
+                db.InsertMany(saveList);
             }
             pkg.Dispose();
             file.Delete();
