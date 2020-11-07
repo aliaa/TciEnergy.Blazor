@@ -61,7 +61,7 @@ namespace TciEnergy.Blazor.Server.Controllers
             return result;
         }
 
-        private static readonly Dictionary<string, string> BillFields = ElecBill.ValidImportProperties.ToDictionary(k => AliaaCommon.Utils.DisplayName(k), v => v.Name);
+        private static readonly Dictionary<string, string> BillFields = ElecBill.ValidImportProperties.ToDictionary(k => DisplayUtils.DisplayName(k), v => v.Name);
 
         private string GetBestSimilarField(IEnumerable<string> fields, string compareTo, out float bestSimilarity)
         {
@@ -69,7 +69,7 @@ namespace TciEnergy.Blazor.Server.Controllers
             string best = fields.FirstOrDefault();
             foreach (var f in fields)
             {
-                float sim = AliaaCommon.Utils.GetSimilarityRateOfStrings(f, compareTo);
+                float sim = StringUtils.GetSimilarityRateOfStrings(f, compareTo);
                 if (sim > bestSimilarity)
                 {
                     bestSimilarity = sim;
