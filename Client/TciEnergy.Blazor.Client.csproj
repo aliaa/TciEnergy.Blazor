@@ -5,6 +5,16 @@
     <RazorLangVersion>3.0</RazorLangVersion>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
+    <BlazorWebAssemblyPreserveCollationData>false</BlazorWebAssemblyPreserveCollationData>
+    <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
+    <EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
+    <EventSourceSupport>false</EventSourceSupport>
+    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="3.0.0" />
     <PackageReference Include="Blazored.Modal" Version="5.1.0" />
