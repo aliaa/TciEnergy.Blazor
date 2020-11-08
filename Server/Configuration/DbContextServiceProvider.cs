@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using TciCommon.Models;
-using TciCommon.ServerUtils;
+using TciCommon.Server;
 
 namespace TciEnergy.Blazor.Server.Configuration
 {

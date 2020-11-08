@@ -11,7 +11,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using TciCommon.Models;
-using TciCommon.ServerUtils;
+using TciCommon.Server;
 using TciEnergy.Blazor.Server.Models;
 using TciEnergy.Blazor.Shared;
 using TciEnergy.Blazor.Shared.Models;

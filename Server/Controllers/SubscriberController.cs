@@ -7,7 +7,7 @@ using Omu.ValueInjecter;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TciCommon.ServerUtils;
+using TciCommon.Server;
 using TciEnergy.Blazor.Shared;
 using TciEnergy.Blazor.Shared.Models;
 

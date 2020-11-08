@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Omu.ValueInjecter;
 using Microsoft.AspNetCore.Authorization;
-using TciCommon.ServerUtils;
+using TciCommon.Server;
 
 namespace TciEnergy.Blazor.Server.Controllers
 {
