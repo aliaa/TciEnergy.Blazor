@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TciCommon.Models", "..\TciC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyMongoNet.Driver", "..\..\EasyMongoNet\Driver\EasyMongoNet.Driver.csproj", "{40BE4B07-6C39-4826-98DF-66C13D86991D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TciCommon.ServerUtils", "..\TciCommon\TciCommon.ServerUtils\TciCommon.ServerUtils.csproj", "{6AF03C0B-E993-4ED8-8BCD-32DF53568533}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AliaaCommon", "..\..\AliaaCommon\AliaaCommon\AliaaCommon.csproj", "{5B604CC2-5DE2-42EB-91B4-C3289FB8F21C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AliaaCommon.Models", "..\..\AliaaCommon\AliaaCommon.Models\AliaaCommon.Models.csproj", "{45691B7E-6E0C-4C1D-BDC6-040818BE5621}"
@@ -53,10 +51,6 @@ Global
 		{40BE4B07-6C39-4826-98DF-66C13D86991D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40BE4B07-6C39-4826-98DF-66C13D86991D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40BE4B07-6C39-4826-98DF-66C13D86991D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6AF03C0B-E993-4ED8-8BCD-32DF53568533}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6AF03C0B-E993-4ED8-8BCD-32DF53568533}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6AF03C0B-E993-4ED8-8BCD-32DF53568533}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6AF03C0B-E993-4ED8-8BCD-32DF53568533}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5B604CC2-5DE2-42EB-91B4-C3289FB8F21C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5B604CC2-5DE2-42EB-91B4-C3289FB8F21C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B604CC2-5DE2-42EB-91B4-C3289FB8F21C}.Release|Any CPU.ActiveCfg = Release|Any CPU

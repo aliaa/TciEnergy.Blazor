@@ -131,7 +131,14 @@
         }
         loading = true;
         var req = new SelectedExcelColumns { FileName = uploadResult.FileName, SelectedColumns = selectedColumns };
-        errors = await http.PostAsJsonAsync<SelectedExcelColumns, List<string>>("BillsImport/SubmitExcelColumns", req);
+        try
+        {
+            errors = await http.PostAsJsonAsync<SelectedExcelColumns, List<string>>("BillsImport/SubmitExcelColumns", req);
+        }
+        catch (Exception ex)
+        {
+            toast.ShowError("خطایی در سامانه اتفاق افتاد!\n" + ex.InnerException?.Message);
+        }
         uploadResult = null;
         loading = false;
     }
