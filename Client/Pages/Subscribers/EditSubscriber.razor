@@ -40,12 +40,12 @@
                         {
                             <div class="form-group">
                                 <Label For="() => model.City" />
-                                <InputSelect @bind-Value="model.City" class="form-control" @attributes="inputAttributes">
+                                <select @bind="model.CityStr" class="form-control" @attributes="inputAttributes">
                                     @foreach (var city in cities)
                                         {
                                         <option value="@city.Id.ToString()">@city.Name</option>
                                         }
-                                </InputSelect>
+                                </select>
                             </div>
                         }
                     </div>

@@ -1,6 +1,8 @@
 ﻿using EasyMongoNet;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace TciEnergy.Blazor.Shared.Models
 {
@@ -39,6 +41,14 @@ namespace TciEnergy.Blazor.Shared.Models
         [Display(Name = "شهر")]
         [Required]
         public ObjectId City { get; set; }
+
+        [BsonIgnore]
+        [JsonIgnore]
+        public string CityStr
+        {
+            get => City.ToString();
+            set => City = ObjectId.Parse(value);
+        }
 
         [Display(Name = "کد ساختمان")]
         public int BuildingCode { get; set; }
