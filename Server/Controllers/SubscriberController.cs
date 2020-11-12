@@ -1,14 +1,11 @@
-﻿using AliaaCommon;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using Omu.ValueInjecter;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TciCommon.Server;
-using TciEnergy.Blazor.Shared;
 using TciEnergy.Blazor.Shared.Models;
 
 namespace TciEnergy.Blazor.Server.Controllers
@@ -25,7 +22,7 @@ namespace TciEnergy.Blazor.Server.Controllers
             this.tableFactory = tableFactory;
         }
 
-        public ActionResult<Subscriber> Item(ObjectId id)
+        public ActionResult<Subscriber> Item(string id)
         {
             return db.FindById<Subscriber>(id);
         }
@@ -39,7 +36,7 @@ namespace TciEnergy.Blazor.Server.Controllers
             else if (city == "others")
                 filter = fb.Ne(s => s.City, PlaceController.GetMainCity(db).Id);
             else
-                filter = fb.Eq(s => s.City, ObjectId.Parse(city));
+                filter = fb.Eq(s => s.City, city);
 
             var result = db.Find(filter).ToEnumerable()
                 .Select(s => Mapper.Map<ClientSubscriber>(s).InjectFrom(s.ElecSub))

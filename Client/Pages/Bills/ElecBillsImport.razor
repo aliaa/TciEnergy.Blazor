@@ -4,8 +4,6 @@
 @inject HttpClientX http
 @inject IToastService toast
 
-@using BlazorInputFile
-
 <div class="container">
     @if (loading)
     {
@@ -78,6 +76,7 @@
 
 @code {
     private const float MIN_SIMILARITY_RATE = 0.4f;
+    private const long MAX_FILE_SIZE = 30 * 1024 * 1024;
 
     private bool loading = false;
     private UploadExcelResult uploadResult;
@@ -85,18 +84,22 @@
     private bool rewrite;
     private List<string> errors = null;
 
-    private static readonly Dictionary<string, string> BillFields = ElecBill.ValidImportProperties.ToDictionary(k => k.Name, v => UtilsX.DisplayName(v));
+    private static readonly Dictionary<string, string> BillFields = ElecBill.ValidImportProperties.ToDictionary(k => k.Name, v => DisplayUtils.DisplayName(v));
 
-    private async Task HandleFileSelection(IFileListEntry[] files)
+    private async Task HandleFileSelection(InputFileChangeEventArgs e)
     {
-        var file = files.FirstOrDefault();
-        if (!file.Name.EndsWith(".xlsx"))
+        if (e.File == null || !e.File.Name.EndsWith(".xlsx"))
         {
             toast.ShowError("فایل وارد شده بایستی فایل اکسل با پسوند xlsx باشد!");
             return;
         }
+        if (e.File.Size > MAX_FILE_SIZE)
+        {
+            toast.ShowError("حجم فایل بیشتر از مقدار قابل قبول است!");
+            return;
+        }
         loading = true;
-        uploadResult = await http.UploadFile<UploadExcelResult>("BillsImport/UploadExcel", file.Data, file.Name);
+        uploadResult = await http.UploadFile<UploadExcelResult>("BillsImport/UploadExcel", e.File.OpenReadStream(MAX_FILE_SIZE), e.File.Name);
         foreach (var header in uploadResult.Headers)
             if (header.SimilarityRate >= MIN_SIMILARITY_RATE)
                 ColumnFieldSelected(header.ColumnIndex, header.BestSimilarField);
@@ -125,7 +128,7 @@
         var duplicates = selectedColumns.GroupBy(kv => kv.Value).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
         if(duplicates.Count > 0)
         {
-            var fieldName = UtilsX.DisplayName(typeof(ElecBill).GetProperty(duplicates[0]));
+            var fieldName = DisplayUtils.DisplayName(typeof(ElecBill).GetProperty(duplicates[0]));
             toast.ShowError($"در فیلدهای انتخاب شده \"{fieldName}\" بیش از یک بار انتخاب شده است!");
             return;
         }

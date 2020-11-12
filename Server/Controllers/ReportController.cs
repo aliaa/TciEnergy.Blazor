@@ -40,8 +40,8 @@ namespace TciEnergy.Blazor.Server.Controllers
             }
 
             City city = null;
-            if (ObjectId.TryParse(req.City, out ObjectId cityId))
-                city = Cities.FirstOrDefault(c => c.Id == cityId);
+            if (req.City != null)
+                city = Cities.FirstOrDefault(c => c.Id == req.City);
 
             var agg = db.Aggregate<ElecBill>();
             if (year != 0)
@@ -90,8 +90,8 @@ namespace TciEnergy.Blazor.Server.Controllers
                 var agg2 = agg.Group(grouping).Sort(new BsonDocument { { VALUE, -1 } });
                 foreach (var item in agg2.ToEnumerable())
                 {
-                    ObjectId cid = item[_ID].AsObjectId;
-                    City c = db.FindById<City>(cid);
+                    var cid = item[_ID].AsObjectId;
+                    City c = db.FindById<City>(cid.ToString());
                     if (c != null)
                         report.Add(new ChartItem { Text = c.Name, Value = GetValue(item[VALUE]) } );
                 }

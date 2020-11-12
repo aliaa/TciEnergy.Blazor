@@ -12,6 +12,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
 using System.Text.Unicode;
 using System.Threading.Tasks;
+using TciCommon.Server;
 using TciEnergy.Blazor.Shared;
 using TciEnergy.Blazor.Shared.Utils;
 
@@ -52,14 +53,10 @@ namespace TciEnergy.Blazor.Server.Configuration
                 options.AddPolicy("Admin", policy => policy.RequireClaim("IsAdmin"));
             });
 
-            var mvcBuilder = services.AddControllersWithViews(config =>
-            {
-                config.ModelBinderProviders.Insert(0, new ObjectIdModelBinderProvider());
-            });
+            var mvcBuilder = services.AddControllersWithViews();
 
             mvcBuilder.AddJsonOptions(options =>
             {
-                options.JsonSerializerOptions.Converters.Add(new Shared.Utils.ObjectIdJsonConverter());
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 options.JsonSerializerOptions.Converters.Add(new DictionaryIntConverter());
             });

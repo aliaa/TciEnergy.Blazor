@@ -40,7 +40,7 @@
                         {
                             <div class="form-group">
                                 <Label For="() => model.City" />
-                                <select @bind="model.CityStr" class="form-control" @attributes="inputAttributes">
+                                <select @bind="model.City" class="form-control" @attributes="inputAttributes">
                                     @foreach (var city in cities)
                                         {
                                         <option value="@city.Id.ToString()">@city.Name</option>
@@ -77,9 +77,9 @@
                         <div class="form-group">
                             <Label For="() => model.ConsumerType" />
                             <InputSelect @bind-Value="model.ConsumerType" class="form-control" @attributes="inputAttributes">
-                                @foreach (var t in UtilsX.GetEnumValues<Subscriber.ConsumerTypeEnum>())
+                                @foreach (var t in DisplayUtils.GetEnumValues<Subscriber.ConsumerTypeEnum>())
                                 {
-                                    <option value="@t">@UtilsX.DisplayName(t)</option>
+                                    <option value="@t">@DisplayUtils.DisplayName(t)</option>
                                 }
                             </InputSelect>
                         </div>
@@ -119,9 +119,9 @@
                         <div class="form-group">
                             <Label For="() => model.ElecSub.PhaseType" />
                             <InputSelect @bind-Value="model.ElecSub.PhaseType" class="form-control" @attributes="inputAttributes">
-                                @foreach (var t in UtilsX.GetEnumValues<ElectricitySubscriber.ElecPhaseEnum>())
+                                @foreach (var t in DisplayUtils.GetEnumValues<ElectricitySubscriber.ElecPhaseEnum>())
                                 {
-                                    <option value="@t">@UtilsX.DisplayName(t)</option>
+                                    <option value="@t">@DisplayUtils.DisplayName(t)</option>
                                 }
                             </InputSelect>
                         </div>
@@ -130,9 +130,9 @@
                         <div class="form-group">
                             <Label For="() => model.ElecSub.TariffType" />
                             <InputSelect @bind-Value="model.ElecSub.TariffType" class="form-control" @attributes="inputAttributes">
-                                @foreach (var t in UtilsX.GetEnumValues<ElectricitySubscriber.TariffTypeEnum>())
+                                @foreach (var t in DisplayUtils.GetEnumValues<ElectricitySubscriber.TariffTypeEnum>())
                                 {
-                                    <option value="@t">@UtilsX.DisplayName(t)</option>
+                                    <option value="@t">@DisplayUtils.DisplayName(t)</option>
                                 }
                             </InputSelect>
                         </div>
@@ -192,7 +192,7 @@
         if (DisableMode)
             return;
         if (id != null)
-            model.Id = ObjectId.Parse(id);
+            model.Id = id;
         try
         {
             var msg = await http.PostAsJsonAsync("Subscriber/Save", model);

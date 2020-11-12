@@ -40,15 +40,8 @@ namespace TciEnergy.Blazor.Shared.Models
 
         [Display(Name = "شهر")]
         [Required]
-        public ObjectId City { get; set; }
-
-        [BsonIgnore]
-        [JsonIgnore]
-        public string CityStr
-        {
-            get => City.ToString();
-            set => City = ObjectId.Parse(value);
-        }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string City { get; set; }
 
         [Display(Name = "کد ساختمان")]
         public int BuildingCode { get; set; }

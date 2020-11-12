@@ -1,6 +1,5 @@
 ﻿using EasyMongoNet;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using OfficeOpenXml;
 using System;
@@ -38,15 +37,7 @@ namespace TciEnergy.Blazor.Server.Controllers
 
         protected string Username => HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-        protected ObjectId? UserId
-        {
-            get
-            {
-                if (ObjectId.TryParse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value, out ObjectId val))
-                    return val;
-                return null;
-            }
-        }
+        protected string UserId => HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
 
         protected IEnumerable<Permission> UserPermissions
         {
@@ -65,7 +56,7 @@ namespace TciEnergy.Blazor.Server.Controllers
         {
             var id = UserId;
             if (id != null)
-                return db.FindById<AuthUserX>(id.Value);
+                return db.FindById<AuthUserX>(id);
             return null;
         }
 
@@ -83,13 +74,13 @@ namespace TciEnergy.Blazor.Server.Controllers
             return File(file, "application/octet-stream", fileName);
         }
 
-        private ObjectId _mainCityId;
-        public ObjectId MainCityId
+        private string _mainCityId;
+        public string MainCityId
         {
             get
             {
-                if (_mainCityId == ObjectId.Empty)
-                    _mainCityId = ObjectId.Parse(db.Find<Settings>(s => s.Key == "MainCity").Project(s => s.Value).FirstOrDefault());
+                if (_mainCityId == null)
+                    _mainCityId = db.Find<Settings>(s => s.Key == "MainCity").Project(s => s.Value).FirstOrDefault();
                 return _mainCityId;
             }
         }

@@ -20,7 +20,6 @@ namespace TciEnergy.Blazor.Client
         static HttpClientX()
         {
             jsonOptions = new JsonSerializerOptions();
-            jsonOptions.Converters.Add(new ObjectIdJsonConverter());
             jsonOptions.Converters.Add(new JsonStringEnumConverter());
             jsonOptions.Converters.Add(new DictionaryIntConverter());
             jsonOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;

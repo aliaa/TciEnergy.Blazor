@@ -1,12 +1,11 @@
-﻿
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using System.ComponentModel.DataAnnotations;
 
 namespace TciEnergy.Blazor.Shared.Models
 {
     public class SubscriberUsage
     {
-        public ObjectId Id { get; set; }
+        public string Id { get; set; }
 
         [Display(Name = "نام مشترک")]
         public string Name { get; set; }

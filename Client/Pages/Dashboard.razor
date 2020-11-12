@@ -89,11 +89,11 @@
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th>@(UtilsX.DisplayName<PeriodTotalInformation>(x => x.TotalPriceMainCity).Replace("شهر اصلی", mainCity))</th>
-                                    <th>@(UtilsX.DisplayName<PeriodTotalInformation>(x => x.TotalPriceOthers))</th>
-                                    <th>@(UtilsX.DisplayName<PeriodTotalInformation>(x => x.TotalPriceSum))</th>
-                                    <th>@(UtilsX.DisplayName<PeriodTotalInformation>(x => x.BillsCountMainCity).Replace("شهر اصلی", mainCity))</th>
-                                    <th>@(UtilsX.DisplayName<PeriodTotalInformation>(x => x.BillsCountOthers))</th>
+                                    <th>@(DisplayUtils.DisplayName<PeriodTotalInformation>(x => x.TotalPriceMainCity).Replace("شهر اصلی", mainCity))</th>
+                                    <th>@(DisplayUtils.DisplayName<PeriodTotalInformation>(x => x.TotalPriceOthers))</th>
+                                    <th>@(DisplayUtils.DisplayName<PeriodTotalInformation>(x => x.TotalPriceSum))</th>
+                                    <th>@(DisplayUtils.DisplayName<PeriodTotalInformation>(x => x.BillsCountMainCity).Replace("شهر اصلی", mainCity))</th>
+                                    <th>@(DisplayUtils.DisplayName<PeriodTotalInformation>(x => x.BillsCountOthers))</th>
                                 </tr>
                             </thead>
                             <tbody>

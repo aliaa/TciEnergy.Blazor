@@ -5,13 +5,13 @@
     <div class="form-group row">
         <label class="col-sm-5">وضعیت کنونی:</label>
         <div class="col-sm-7">
-            <b>@UtilsX.DisplayName(Bill.PayStatus)</b>
+            <b>@DisplayUtils.DisplayName(Bill.PayStatus)</b>
         </div>
     </div>
     @if (Bill.PayStatus == ElecBill.PayStatusEnum.NotPaid)
     {
         <div class="form-group row">
-            <label class="col-sm-5">@(UtilsX.DisplayName<ElecBill>(b => b.PaymentNumber)):</label>
+            <label class="col-sm-5">@(DisplayUtils.DisplayName<ElecBill>(b => b.PaymentNumber)):</label>
             <div class="col-sm-7">
                 <input type="number" @bind-value="num" class="form-control" required />
             </div>
@@ -20,7 +20,7 @@
     else if (Bill.PayStatus == ElecBill.PayStatusEnum.Paid)
     {
         <div class="form-group row">
-            <label class="col-sm-5">@(UtilsX.DisplayName<ElecBill>(b => b.DocumentNumber)):</label>
+            <label class="col-sm-5">@(DisplayUtils.DisplayName<ElecBill>(b => b.DocumentNumber)):</label>
             <div class="col-sm-7">
                 <input type="number" @bind-value="num" class="form-control" required />
             </div>
@@ -30,7 +30,7 @@
     {
         <div class="mt-4 text-center">
             <button class="btn btn-primary" @onclick="ChangeStatus">
-                تغییر وضعیت به @UtilsX.DisplayName(NextStatus())
+                تغییر وضعیت به @DisplayUtils.DisplayName(NextStatus())
             </button>
         </div>
     }

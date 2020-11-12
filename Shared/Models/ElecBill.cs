@@ -35,7 +35,8 @@ namespace TciEnergy.Blazor.Shared.Models
         [Display(Name = "شماره اشتراک")]
         public int SubsNum { get; set; }
 
-        public ObjectId CityId { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string CityId { get; set; }
 
         [BsonRepresentation(BsonType.String)]
         [Display(Name = "وضعیت پرداخت")]

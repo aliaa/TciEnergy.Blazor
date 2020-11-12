@@ -39,9 +39,9 @@
                 <div class="form-group">
                     <Label For="() => model.BasedOn" />
                     <InputSelect @bind-Value="model.BasedOn" class="form-control">
-                        @foreach (var item in UtilsX.GetEnumValues<TotalReportRequest.BasedOnEnum>())
+                        @foreach (var item in DisplayUtils.GetEnumValues<TotalReportRequest.BasedOnEnum>())
                         {
-                            <option value="@item">@UtilsX.DisplayName(item)</option>
+                            <option value="@item">@DisplayUtils.DisplayName(item)</option>
                         }
                     </InputSelect>
                 </div>
@@ -50,16 +50,16 @@
                     <InputSelect @bind-Value="model.Field" class="form-control">
                         @foreach (var prop in ElecBill.ValidReportProperties)
                         {
-                            <option value="@prop.Name">@UtilsX.DisplayName(prop)</option>
+                            <option value="@prop.Name">@DisplayUtils.DisplayName(prop)</option>
                         }
                     </InputSelect>
                 </div>
                 <div class="form-group">
                     <Label For="() => model.Operation" />
                     <InputSelect @bind-Value="model.Operation" class="form-control">
-                        @foreach (var item in UtilsX.GetEnumValues<TotalReportRequest.OperationEnum>())
+                        @foreach (var item in DisplayUtils.GetEnumValues<TotalReportRequest.OperationEnum>())
                         {
-                            <option value="@item">@UtilsX.DisplayName(item)</option>
+                            <option value="@item">@DisplayUtils.DisplayName(item)</option>
                         }
                     </InputSelect>
                 </div>
@@ -100,7 +100,7 @@
         periods = await http.GetFromJsonAsync<List<string>>("Bills/YearPeriods");
     }
 
-    private async Task Submit(EditContext context)
+    private async Task Submit()
     {
         if(model.BasedOn == TotalReportRequest.BasedOnEnum.City && model.City != "all")
         {

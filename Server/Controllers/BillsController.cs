@@ -53,7 +53,7 @@ namespace TciEnergy.Blazor.Server.Controllers
                 fb.Eq(b => b.Period, period)
             };
             if (city != "all")
-                filters.Add(fb.Eq(b => b.CityId, ObjectId.Parse(city)));
+                filters.Add(fb.Eq(b => b.CityId, city));
 
             var agg = db.Aggregate<ElecBill>().Match(fb.And(filters));
             return await ConvertAggregate(agg);
@@ -77,7 +77,7 @@ namespace TciEnergy.Blazor.Server.Controllers
             return list;
         }
 
-        public async Task<ActionResult<List<ClientElecBill>>> BySubscriber(ObjectId subscriber)
+        public async Task<ActionResult<List<ClientElecBill>>> BySubscriber(string subscriber)
         {
             var subsNum = db.FindById<Subscriber>(subscriber).ElecSub.ElecSubsNum;
             var agg = db.Aggregate<ElecBill>().Match(b => b.SubsNum == subsNum);
@@ -91,7 +91,7 @@ namespace TciEnergy.Blazor.Server.Controllers
             return await CreateExcelFile(table, yearPeriod, "ElecBills.xlsx");
         }
 
-        public IActionResult ChangePayStatus(ObjectId id, ElecBill.PayStatusEnum newStatus, long num)
+        public IActionResult ChangePayStatus(string id, ElecBill.PayStatusEnum newStatus, long num)
         {
             var bill = db.FindById<ElecBill>(id);
             if (bill == null)

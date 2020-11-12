@@ -74,7 +74,7 @@ namespace TciEnergy.Blazor.Server.Controllers
         [HttpPost]
         public IActionResult ChangePassword(ChangePasswordVM model)
         {
-            var user = db.FindFirst<AuthUserX>(u => u.Id == UserId.Value);
+            var user = db.FindFirst<AuthUserX>(u => u.Id == UserId);
             if (user != null)
             {
                 if (AuthUserDBExtention.GetHash(model.CurrentPassword) == user.HashedPassword)
