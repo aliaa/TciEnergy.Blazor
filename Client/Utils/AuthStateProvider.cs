@@ -24,7 +24,15 @@ namespace TciEnergy.Blazor.Client
 
         public async Task<ClientAuthUser> GetUser()
         {
-            return await storage.GetItemAsync<ClientAuthUser>("user");
+            try
+            {
+                return await storage.GetItemAsync<ClientAuthUser>("user");
+            }
+            catch
+            {
+                await storage.RemoveItemAsync("user");
+                return null;
+            }
         }
 
         private async Task<ClaimsPrincipal> GetClaims()

@@ -22,6 +22,7 @@ namespace TciEnergy.Blazor.Server.Controllers
     {
         public BillsImportController(ProvinceDBs dbs) : base(dbs) { }
 
+        [HttpPost]
         public async Task<UploadExcelResult> UploadExcel(IFormFile file)
         {
             var fileName = Path.GetTempFileName();
