@@ -13,7 +13,7 @@
     <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="3.0.0" />
     <PackageReference Include="Blazored.Modal" Version="5.1.0" />
@@ -31,9 +31,4 @@
     <ProjectReference Include="..\..\TciCommon\TciCommon.Models\TciCommon.Models.csproj" />
     <ProjectReference Include="..\Shared\TciEnergy.Blazor.Shared.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\js\" />
-  </ItemGroup>
-
 </Project>

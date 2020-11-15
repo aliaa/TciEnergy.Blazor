@@ -5,11 +5,8 @@
 @inject IToastService toast
 
 <div class="container">
-    @if (loading)
-    {
-        <Loading />
-    }
-    else if (uploadResult == null)
+
+    @if (uploadResult == null)
     {
         <div class="form-group">
             <label>فایل اکسل ورودی</label>
@@ -19,7 +16,11 @@
             <small class="text-muted">توجه: فقط اولین شیت فایل اکسل بررسی خواهد شد!</small>
         </div>
     }
-    else if (errors == null)
+    @if (loading)
+    {
+        <Loading />
+    }
+    else if (uploadResult != null && errors == null)
     {
         <h4>لطفا فیلد مربوط به هر ستون را انتخاب نمائید</h4>
         <div class="row mt-5">
@@ -53,7 +54,7 @@
             </div>
         </div>
     }
-    
+
     @if (errors != null)
     {
         if (errors.Count == 0)
@@ -88,6 +89,7 @@
 
     private async Task HandleFileSelection(InputFileChangeEventArgs e)
     {
+        loading = true;
         if (e.File == null || !e.File.Name.EndsWith(".xlsx"))
         {
             toast.ShowError("فایل وارد شده بایستی فایل اکسل با پسوند xlsx باشد!");
@@ -98,8 +100,8 @@
             toast.ShowError("حجم فایل بیشتر از مقدار قابل قبول است!");
             return;
         }
-        loading = true;
-        uploadResult = await http.UploadFile<UploadExcelResult>("BillsImport/UploadExcel", e.File.OpenReadStream(MAX_FILE_SIZE), e.File.Name);
+        using var stream = e.File.OpenReadStream(MAX_FILE_SIZE);
+        uploadResult = await http.UploadFile<UploadExcelResult>("BillsImport/UploadExcel", stream, e.File.Name);
         foreach (var header in uploadResult.Headers)
             if (header.SimilarityRate >= MIN_SIMILARITY_RATE)
                 ColumnFieldSelected(header.ColumnIndex, header.BestSimilarField);
@@ -126,7 +128,7 @@
     private async Task SubmitSelectedColumns()
     {
         var duplicates = selectedColumns.GroupBy(kv => kv.Value).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
-        if(duplicates.Count > 0)
+        if (duplicates.Count > 0)
         {
             var fieldName = DisplayUtils.DisplayName(typeof(ElecBill).GetProperty(duplicates[0]));
             toast.ShowError($"در فیلدهای انتخاب شده \"{fieldName}\" بیش از یک بار انتخاب شده است!");
