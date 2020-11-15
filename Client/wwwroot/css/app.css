@@ -51,18 +51,6 @@ a, .btn-link {
     border-color: #1861ac;
 }
 
-app {
-}
-
-.content {
-    padding-top: 2rem;
-}
-
-.navbar-brand {
-    margin-right: 0rem !important;
-    margin-left: 1rem !important;
-}
-
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
 }

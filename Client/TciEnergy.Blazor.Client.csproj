@@ -26,9 +26,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\AliaaCommon\AliaaCommon.Blazor\AliaaCommon.Blazor.csproj" />
     <ProjectReference Include="..\..\..\AliaaCommon\AliaaCommon\AliaaCommon.csproj" />
     <ProjectReference Include="..\..\TciCommon\TciCommon.Models\TciCommon.Models.csproj" />
     <ProjectReference Include="..\Shared\TciEnergy.Blazor.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\js\" />
   </ItemGroup>
 
 </Project>

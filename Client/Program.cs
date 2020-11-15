@@ -9,6 +9,7 @@ using Blazored.Modal;
 using Microsoft.AspNetCore.Components;
 using Blazored.Toast;
 using Microsoft.JSInterop;
+using AliaaCommon.Blazor.Utils;
 
 namespace TciEnergy.Blazor.Client
 {
