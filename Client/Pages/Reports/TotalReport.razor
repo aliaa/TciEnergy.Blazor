@@ -114,7 +114,7 @@
         }
 
         loading = true;
-        data = await http.PostAsJsonAsync<TotalReportRequest, List<ChartItem>>("Report/Total", model);
+        data = await http.PostAsJsonAsync<TotalReportRequest, List<ChartItem>>("Reports/Total", model);
         loading = false;
     }
 }

@@ -76,6 +76,8 @@
 
     private async Task Submit()
     {
-        data = await http.PostAsJsonAsync<ChangesReportRequest, List<ChangesReportResponse>>("Report/Changes", model);
+        loading = true;
+        data = await http.PostAsJsonAsync<ChangesReportRequest, List<ChangesReportResponse>>("Reports/Changes", model);
+        loading = false;
     }
 }

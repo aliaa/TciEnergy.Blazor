@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,12 +11,12 @@ using TciEnergy.Blazor.Shared.ViewModels;
 
 namespace TciEnergy.Blazor.Server.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/Reports/Total")]
     [ApiController]
     [Authorize]
-    public class ReportController : BaseController
+    public class TotalReportController : BaseController
     {
-        public ReportController(ProvinceDBs dbs) : base(dbs) { }
+        public TotalReportController(ProvinceDBs dbs) : base(dbs) { }
 
         private const string _ID = "_id";
         private const string VALUE = "Value";
