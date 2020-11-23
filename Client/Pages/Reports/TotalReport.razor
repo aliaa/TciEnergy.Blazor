@@ -69,7 +69,7 @@
             </EditForm>
         </div>
         <div class="col-md-9">
-            @if(loading)
+            @if (loading)
             {
                 <Loading />
             }
@@ -102,12 +102,12 @@
 
     private async Task Submit()
     {
-        if(model.BasedOn == TotalReportRequest.BasedOnEnum.City && model.City != "all")
+        if (model.BasedOn == TotalReportRequest.BasedOnEnum.City && model.City != "all")
         {
             toast.ShowError("برای گرفتن گزارش بر اساس شهر، لازم است شهر را همه انتخاب کنید!");
             return;
         }
-        if(model.BasedOn == TotalReportRequest.BasedOnEnum.Period && model.Period != "all")
+        if (model.BasedOn == TotalReportRequest.BasedOnEnum.Period && model.Period != "all")
         {
             toast.ShowError("برای گرفتن گزارش بر اساس دوره، لازم است دوره را همه انتخاب کنید!");
             return;
