@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using System.Text.Json.Serialization;
 using TciEnergy.Blazor.Shared.Models;
 
 namespace TciEnergy.Blazor.Shared.ViewModels
@@ -17,8 +19,18 @@ namespace TciEnergy.Blazor.Shared.ViewModels
             PrevoisYear,
         }
 
+        public int Year { get; set; }
+
+        public int Period { get; set; }
+
+        [JsonIgnore]
+        public YearPeriod YearPeriod => new YearPeriod { Year = Year, Period = Period };
+
         [Display(Name = "نام فیلد قبض")]
         public string FieldName { get; set; }
+
+        [JsonIgnore]
+        public PropertyInfo Field => FieldName == null ? null : typeof(ElecBill).GetProperty(FieldName);
         
         [Display(Name = "مقایسه با")]
         public CompareWithEnum CompareWith { get; set; }

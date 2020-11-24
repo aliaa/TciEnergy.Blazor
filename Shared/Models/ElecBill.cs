@@ -9,6 +9,7 @@ using System.Reflection;
 namespace TciEnergy.Blazor.Shared.Models
 {
     [CollectionIndex(new string[] { nameof(SubsNum) })]
+    [CollectionIndex(new string[] { nameof(Year), nameof(Period), nameof(SubsNum) }, Unique = true)]
     public class ElecBill : MongoEntity
     {
         public static readonly PropertyInfo[] ValidImportProperties = typeof(ElecBill).GetProperties()

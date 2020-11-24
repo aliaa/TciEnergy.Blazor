@@ -4,10 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using TciCommon.Server;
 using TciEnergy.Blazor.Shared.Models;
 using MongoDB.Driver;
-using MongoDB.Bson;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
-using AliaaCommon;
 
 namespace TciEnergy.Blazor.Server.Controllers
 {
@@ -23,14 +21,14 @@ namespace TciEnergy.Blazor.Server.Controllers
             this.tableFactory = tableFactory;
         }
 
-        public ActionResult<List<string>> YearPeriods()
+        public async Task<ActionResult<List<string>>> YearPeriods()
         {
-            return db.Aggregate<ElecBill>()
+            return (await db.Aggregate<ElecBill>()
                 .Group(b => new { b.Year, b.Period }, g => new { g.Key })
                 .ReplaceRoot(a => a.Key)
                 .SortByDescending(a => a.Year)
                 .ThenByDescending(a => a.Period)
-                .ToEnumerable()
+                .ToCursorAsync()).ToEnumerable()
                 .Select(a => a.Year + "-" + a.Period)
                 .ToList();
         }

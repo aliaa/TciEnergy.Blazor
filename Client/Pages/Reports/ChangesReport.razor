@@ -4,48 +4,64 @@
 <div class="container">
     <h3>گزارش تغییرات قبوض</h3>
 
-    <div class="row mt-5">
-        <div class="col-md-3">
-            <EditForm Model="model" OnValidSubmit="Submit">
-                <DataAnnotationsValidator />
-                <div class="form-group">
-                    <Label For="() => model.FieldName" />
-                    <InputSelect @bind-Value="model.FieldName" class="form-control">
-                        @foreach (var item in ChangesReportRequest.FieldNames)
-                        {
-                            <option value="@item">@DisplayUtils.DisplayName(typeof(ElecBill), item)</option>
-                        }
-                    </InputSelect>
-                </div>
-                <div class="form-group">
-                    <Label For="() => model.CompareWith" />
-                    <InputSelect @bind-Value="model.CompareWith" class="form-control">
-                        @foreach (var item in DisplayUtils.GetEnumValues<ChangesReportRequest.CompareWithEnum>())
-                        {
-                            <option value="@item">@DisplayUtils.DisplayName(item)</option>
-                        }
-                    </InputSelect>
-                </div>
-                <div class="form-group">
-                    <Label For="() => model.MinChangePercent" />
-                    <InputNumber @bind-Value="model.MinChangePercent" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <input type="submit" class="btn btn-primary" value="تائید" />
-                </div>
-            </EditForm>
+    @if (yearPeriods == null)
+    {
+        <Loading />
+    }
+    else
+    {
+        <div class="row mt-5">
+            <div class="col-md-3">
+                <EditForm Model="model" OnValidSubmit="Submit">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label>دوره</label>
+                        <InputSelect @bind-Value="YearPeriodStr" class="form-control">
+                            @foreach (var item in yearPeriods)
+                                {
+                                <option>@item</option>
+                                }
+                        </InputSelect>
+                    </div>
+                    <div class="form-group">
+                        <Label For="() => model.FieldName" />
+                        <InputSelect @bind-Value="model.FieldName" class="form-control">
+                            @foreach (var item in ChangesReportRequest.FieldNames)
+                                {
+                                <option value="@item">@DisplayUtils.DisplayName(typeof(ElecBill), item)</option>
+                                }
+                        </InputSelect>
+                    </div>
+                    <div class="form-group">
+                        <Label For="() => model.CompareWith" />
+                        <InputSelect @bind-Value="model.CompareWith" class="form-control">
+                            @foreach (var item in DisplayUtils.GetEnumValues<ChangesReportRequest.CompareWithEnum>())
+                                {
+                                <option value="@item">@DisplayUtils.DisplayName(item)</option>
+                                }
+                        </InputSelect>
+                    </div>
+                    <div class="form-group">
+                        <Label For="() => model.MinChangePercent" />
+                        <InputNumber @bind-Value="model.MinChangePercent" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-primary" value="تائید" />
+                    </div>
+                </EditForm>
+            </div>
+            <div class="col-md-9">
+                @if (loading)
+                {
+                    <Loading />
+                }
+                else if (data != null)
+                {
+                    <ObjectTable Data="data" />
+                }
+            </div>
         </div>
-        <div class="col-md-9">
-            @if(loading)
-            {
-                <Loading />
-            }
-            else if (data != null)
-            {
-                <ObjectTable Data="data" FieldNames="columns" />
-            }
-        </div>
-    </div>
+    }
 </div>
 
 
@@ -53,24 +69,30 @@
 @code {
 
     private bool loading = false;
+    private List<string> yearPeriods;
     private ChangesReportRequest model = new ChangesReportRequest
     {
+        FieldName = ChangesReportRequest.FieldNames[0],
         MinChangePercent = 10
     };
 
-    private static readonly string[] columns =
-        new string[]
+    private string YearPeriodStr
+    {
+        get => model.Year + "-" + model.Period;
+        set
         {
-            nameof(ClientElecBill.SubscriberName),
-            nameof(ClientElecBill.SubscriberId),
-            nameof(ClientElecBill.CityName),
-            nameof(ElecBill.SubsNum),
-            nameof(ElecBill.Year),
-            nameof(ElecBill.Period),
-            nameof(ChangesReportResponse.ChangesPercent)
+            var split = value.Split('-');
+            model.Year = int.Parse(split[0]);
+            model.Period = int.Parse(split[1]);
         }
-        .Concat(ChangesReportRequest.FieldNames)
-        .ToArray();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        yearPeriods = await http.GetFromJsonAsync<List<string>>("Bills/YearPeriods");
+        if(yearPeriods.Count > 0)
+            YearPeriodStr = yearPeriods[0];
+    }
 
     private List<ChangesReportResponse> data;
 
@@ -80,4 +102,5 @@
         data = await http.PostAsJsonAsync<ChangesReportRequest, List<ChangesReportResponse>>("Reports/Changes", model);
         loading = false;
     }
+
 }

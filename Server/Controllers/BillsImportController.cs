@@ -80,8 +80,10 @@ namespace TciEnergy.Blazor.Server.Controllers
             return best;
         }
 
+        record SubsNumYearPeriod(int SubsNum, int Year, int Period);
+
         [HttpPost]
-        public ActionResult<List<string>> SubmitExcelColumns(SelectedExcelColumns req)
+        public async Task<ActionResult<List<string>>> SubmitExcelColumns(SelectedExcelColumns req)
         {
             var errors = new List<string>();
             var saveList = new List<ElecBill>();
@@ -96,9 +98,15 @@ namespace TciEnergy.Blazor.Server.Controllers
             var columnMap = req.SelectedColumns.Select(kv => new { Column = kv.Key, Property = ElecBill.ValidImportProperties.First(p => p.Name == kv.Value) })
                 .ToDictionary(a => a.Column, a => a.Property);
 
-            var billsDuplicateCheck = db.Aggregate<ElecBill>()
-                .Group(k => k.SubsNum, g => new { SubsNum = g.Key, Dates = g.Select(b => b.CurrentDate).ToList() })
-                .ToEnumerable().ToDictionary(a => a.SubsNum, a => a.Dates);
+            var billsDuplicateCheck = (await db.Aggregate<ElecBill>()
+                .Group(k => new { k.SubsNum, k.Year, k.Period }, g => new { g.Key })
+                .ToCursorAsync())
+                .ToEnumerable().Select(k => new SubsNumYearPeriod(k.Key.SubsNum, k.Key.Year, k.Key.Period))
+                .ToList();
+
+            //var billsDuplicateCheck = db.Aggregate<ElecBill>()
+            //    .Group(k => k.SubsNum, g => new { SubsNum = g.Key, Dates = g.Select(b => new YearPeriod { Year = b.Year, Period = b.Period }).ToList() })
+            //    .ToEnumerable().ToDictionary(a => a.SubsNum, a => a.Dates);
 
             var file = new FileInfo(filePath);
             using var pkg = new ExcelPackage(file);
@@ -180,15 +188,11 @@ namespace TciEnergy.Blazor.Server.Controllers
                     obj.CityId = subscriber.City;
                     if (!req.OverwriteExistingBills)
                     {
-                        if (billsDuplicateCheck.ContainsKey(obj.SubsNum) && billsDuplicateCheck[obj.SubsNum].Contains(obj.CurrentDate))
-                            errors.Add($"سطر {row}: قبض با شماره اشتراک {obj.SubsNum} و تاریخ فعلی {obj.CurrentDate.ToPersianDate()} قبلا موجود است!");
+                        var newCheck = new SubsNumYearPeriod(obj.SubsNum, obj.Year, obj.Period);
+                        if (billsDuplicateCheck.Contains(newCheck))
+                            errors.Add($"سطر {row}: قبض با شماره اشتراک {obj.SubsNum} در دوره {obj.Year}-{obj.Period} قبلا موجود است!");
                         else
-                        {
-                            if (billsDuplicateCheck.ContainsKey(obj.SubsNum))
-                                billsDuplicateCheck[obj.SubsNum].Add(obj.CurrentDate);
-                            else
-                                billsDuplicateCheck.Add(obj.SubsNum, new List<DateTime> { obj.CurrentDate });
-                        }
+                            billsDuplicateCheck.Add(newCheck);
                     }
                 }
                 if (errors.Count == 0)
@@ -200,8 +204,8 @@ namespace TciEnergy.Blazor.Server.Controllers
             {
                 if (req.OverwriteExistingBills)
                     foreach (var obj in saveList)
-                        db.DeleteOne<ElecBill>(eb => eb.Year == obj.Year && eb.Period == obj.Period && eb.SubsNum == obj.SubsNum);
-                db.InsertMany(saveList);
+                        db.DeleteOne<ElecBill>(eb => eb.SubsNum == obj.SubsNum && eb.Year == obj.Year && eb.Period == obj.Period);
+                await db.InsertManyAsync(saveList);
             }
             pkg.Dispose();
             file.Delete();
