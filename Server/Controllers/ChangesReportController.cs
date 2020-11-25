@@ -58,7 +58,7 @@ namespace TciEnergy.Blazor.Server.Controllers
 
             var result = new List<ChangesReportResponse>(lastValues.Count);
             var cities = (await db.Find<City>(_ => true).ToListAsync()).ToDictionary(c => c.Id, c => c.Name);
-            var subs = (await db.Find<Subscriber>(_ => true).ToListAsync()).ToDictionary(s => s.ElecSub.ElecSubsNum, s => s.Name);
+            var subs = (await db.Find<Subscriber>(_ => true).ToListAsync()).ToDictionary(s => s.ElecSub.ElecSubsNum);
             foreach (var lv in lastValues.Where(lv => prevValues.ContainsKey(lv.Key)).Select(kv => kv.Value))
             {
                 var resItem = Mapper.Map<ChangesReportResponse>(lv);
@@ -68,8 +68,11 @@ namespace TciEnergy.Blazor.Server.Controllers
                     continue;
                 if (cities.TryGetValue(lv.CityId, out string cityName))
                     resItem.CityName = cityName;
-                if (subs.TryGetValue(lv.SubsNum, out string subsName))
-                    resItem.SubscriberName = subsName;
+                if (subs.ContainsKey(lv.SubsNum))
+                {
+                    resItem.SubscriberName = subs[lv.SubsNum].Name;
+                    resItem.SubscriberId = subs[lv.SubsNum].Id;
+                }
                 result.Add(resItem);
             }
 

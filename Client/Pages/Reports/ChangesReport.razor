@@ -57,7 +57,7 @@
                 }
                 else if (data != null)
                 {
-                    <ObjectTable Data="data" />
+                    <ObjectTable Data="data" LinkColumns="linkColumns" />
                 }
             </div>
         </div>
@@ -86,6 +86,17 @@
             model.Period = int.Parse(split[1]);
         }
     }
+
+    private ObjectTable<ChangesReportResponse>.LinkColumn[] linkColumns = new ObjectTable<ChangesReportResponse>.LinkColumn[]
+    {
+        new ObjectTable<ChangesReportResponse>.LinkColumn
+        {
+            Name = "SubscriberDetails",
+            Text = "جزئیات مشترک",
+            KeyFieldName = nameof(ChangesReportResponse.SubscriberId),
+            Link = "/subscribers/details/{"+nameof(ChangesReportResponse.SubscriberId) +"}"
+        }
+    };
 
     protected override async Task OnInitializedAsync()
     {

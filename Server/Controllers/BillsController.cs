@@ -75,10 +75,16 @@ namespace TciEnergy.Blazor.Server.Controllers
             return list;
         }
 
-        public async Task<ActionResult<List<ClientElecBill>>> BySubscriber(string subscriber)
+        public async Task<ActionResult<List<ClientElecBill>>> BySubscriberId(string id)
         {
-            var subsNum = db.FindById<Subscriber>(subscriber).ElecSub.ElecSubsNum;
+            var subsNum = db.FindById<Subscriber>(id).ElecSub.ElecSubsNum;
             var agg = db.Aggregate<ElecBill>().Match(b => b.SubsNum == subsNum);
+            return await ConvertAggregate(agg);
+        }
+
+        public async Task<ActionResult<List<ClientElecBill>>> BySubscriberNumber(int num)
+        {
+            var agg = db.Aggregate<ElecBill>().Match(b => b.SubsNum == num);
             return await ConvertAggregate(agg);
         }
 

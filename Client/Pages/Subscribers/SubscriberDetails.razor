@@ -23,7 +23,7 @@
     else
     {
         <div class="table-responsive">
-            <ObjectTable Data="bills" />
+            <ObjectTable Data="bills" Width="6000" />
         </div>
     }
 </div>
@@ -39,6 +39,6 @@
     {
         var auth = (AuthStateProvider)_auth;
         user = await auth.GetUser();
-        bills = await http.GetFromJsonAsync<List<ClientElecBill>>("Bills/BySubscriber?subscriber=" + id);
+        bills = await http.GetFromJsonAsync<List<ClientElecBill>>("Bills/BySubscriberId?id=" + id);
     }
 }
