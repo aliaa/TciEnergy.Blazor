@@ -28,12 +28,30 @@ namespace TciEnergy.Blazor.Server.Controllers
             var field = req.Field;
             Dictionary<int, BillValue> lastValues, prevValues;
 
-            lastValues = await GetBillValues(field, req.Year, req.Period);
+            lastValues = (await GetBillValues(field, req.Year, req.Period)).ToDictionary(b => b.SubsNum);
 
             if (req.CompareWith == ChangesReportRequest.CompareWithEnum.Previous)
             {
                 var prevPeriod = req.YearPeriod.Previous;
-                prevValues = await GetBillValues(field, prevPeriod.Year, prevPeriod.Period);
+                prevValues = (await GetBillValues(field, prevPeriod.Year, prevPeriod.Period)).ToDictionary(b => b.SubsNum);
+            }
+            else if (req.CompareWith == ChangesReportRequest.CompareWithEnum.PrevoisYear)
+            {
+                prevValues = (await GetBillValues(field, req.Year - 1, req.Period)).ToDictionary(b => b.SubsNum);
+            }
+            else if(req.CompareWith == ChangesReportRequest.CompareWithEnum.Avg3Previous)
+            {
+                var values = new List<BillValue>();
+                var prevPeriod = req.YearPeriod;
+                for (int i = 0; i < 3; i++)
+                {
+                    prevPeriod = prevPeriod.Previous;
+                    values.AddRange(await GetBillValues(field, prevPeriod.Year, prevPeriod.Period));
+                }
+                prevValues = values.GroupBy(b => b.SubsNum)
+                    .Where(g => g.Count() > 1)
+                    .Select(g => g.First() with { Value = g.Average(b => b.Value) })
+                    .ToDictionary(b => b.SubsNum);
             }
             else
                 throw new NotImplementedException();
@@ -60,13 +78,11 @@ namespace TciEnergy.Blazor.Server.Controllers
             return result;
         }
 
-        private async Task<Dictionary<int, BillValue>> GetBillValues(PropertyInfo field, int year, int period)
+        private async Task<IEnumerable<BillValue>> GetBillValues(PropertyInfo field, int year, int period)
         {
             return (await db.Find<ElecBill>(b => b.Year == year && b.Period == period)
-                //.Project(Builders<ElecBill>.Projection.Include(field.Name).Include(b => b.Id).Include(b => b.SubsNum).Include(b => b.CityId))
-                //.As<ElecBill>()
                 .ToCursorAsync()).ToEnumerable()
-                .ToDictionary(b => b.SubsNum, b => new BillValue(b.Id, b.SubsNum, b.CityId, ConvertBoxedToFloat(field.PropertyType, field.GetValue(b))));
+                .Select(b => new BillValue(b.Id, b.SubsNum, b.CityId, ConvertBoxedToFloat(field.PropertyType, field.GetValue(b))));
         }
 
         private static float ConvertBoxedToFloat(Type type, object obj)
