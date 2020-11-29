@@ -29,6 +29,7 @@ namespace TciEnergy.Blazor.Shared.Models
             get { return FirstName + " " + LastName; }
         }
 
+        [Display(Name = "سطوح دسترسی")]
         public List<Permission> Permissions { get; set; } = new List<Permission>();
 
         public bool HasPermission(Permission perm)

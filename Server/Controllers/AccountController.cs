@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authentication;
 using Omu.ValueInjecter;
 using Microsoft.AspNetCore.Authorization;
 using TciCommon.Server;
+using System;
 
 namespace TciEnergy.Blazor.Server.Controllers
 {
@@ -46,9 +47,14 @@ namespace TciEnergy.Blazor.Server.Controllers
                 if (user.IsAdmin)
                     claims.Add(new Claim("IsAdmin", "true"));
 
+                IEnumerable<Permission> permissions;
+                if (user.IsAdmin)
+                    permissions = Enum.GetValues<Permission>();
+                else
+                    permissions = user.Permissions;
                 var perms = new StringBuilder();
-                foreach (var perm in user.Permissions)
-                    perms.Append(perm).Append(",");
+                foreach (var perm in permissions)
+                    perms.Append(perm).Append(',');
                 claims.Add(new Claim(nameof(Permission), perms.ToString()));
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -111,7 +117,7 @@ namespace TciEnergy.Blazor.Server.Controllers
         [Authorize(nameof(Permission.ManageUsers))]
         public ActionResult<List<ClientAuthUser>> List()
         {
-            return db.Find<AuthUserX>(_ => true).SortBy(u => u.LastName).ThenBy(u => u.FirstName)
+            return db.Find<AuthUserX>(u => u.Disabled != true).SortBy(u => u.LastName).ThenBy(u => u.FirstName)
                 .Project(Builders<AuthUserX>.Projection.Exclude(u => u.HashedPassword)).As<AuthUserX>()
                 .ToEnumerable().Select(u => Mapper.Map<ClientAuthUser>(u)).ToList();
         }
