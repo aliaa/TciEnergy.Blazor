@@ -105,10 +105,6 @@ namespace TciEnergy.Blazor.Server.Controllers
                 .ToEnumerable().Select(k => new SubsNumYearPeriod(k.Key.SubsNum, k.Key.Year, k.Key.Period))
                 .ToList();
 
-            //var billsDuplicateCheck = db.Aggregate<ElecBill>()
-            //    .Group(k => k.SubsNum, g => new { SubsNum = g.Key, Dates = g.Select(b => new YearPeriod { Year = b.Year, Period = b.Period }).ToList() })
-            //    .ToEnumerable().ToDictionary(a => a.SubsNum, a => a.Dates);
-
             var file = new FileInfo(filePath);
             using var pkg = new ExcelPackage(file);
             var sheet = pkg.Workbook.Worksheets[pkg.Compatibility.IsWorksheets1Based ? 1 : 0];

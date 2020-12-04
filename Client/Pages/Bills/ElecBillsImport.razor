@@ -135,7 +135,12 @@
             return;
         }
         loading = true;
-        var req = new SelectedExcelColumns { FileName = uploadResult.FileName, SelectedColumns = selectedColumns };
+        var req = new SelectedExcelColumns 
+        { 
+            FileName = uploadResult.FileName, 
+            SelectedColumns = selectedColumns,
+            OverwriteExistingBills = rewrite
+        };
         try
         {
             errors = await http.PostAsJsonAsync<SelectedExcelColumns, List<string>>("BillsImport/SubmitExcelColumns", req);
