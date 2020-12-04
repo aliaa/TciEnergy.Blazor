@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TciCommon.Server;
 using TciEnergy.Blazor.Shared.Models;
+using TciEnergy.Blazor.Shared.ViewModels;
 
 namespace TciEnergy.Blazor.Server.Controllers
 {

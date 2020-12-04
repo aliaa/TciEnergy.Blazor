@@ -1,8 +1,9 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel.DataAnnotations;
+using TciEnergy.Blazor.Shared.Models;
 
-namespace TciEnergy.Blazor.Shared.Models
+namespace TciEnergy.Blazor.Shared.ViewModels
 {
     public class ClientElecBill : ElecBill
     {

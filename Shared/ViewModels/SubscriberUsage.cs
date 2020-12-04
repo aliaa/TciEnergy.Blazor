@@ -1,7 +1,6 @@
-﻿using MongoDB.Bson;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace TciEnergy.Blazor.Shared.Models
+namespace TciEnergy.Blazor.Shared.ViewModels
 {
     public class SubscriberUsage
     {

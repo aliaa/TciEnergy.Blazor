@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TciEnergy.Blazor.Shared.Models
+namespace TciEnergy.Blazor.Shared.ViewModels
 {
     public class UploadExcelResult
     {

@@ -12,6 +12,7 @@ using MongoDB.Driver;
 using OfficeOpenXml;
 using TciCommon.Server;
 using TciEnergy.Blazor.Shared.Models;
+using TciEnergy.Blazor.Shared.ViewModels;
 
 namespace TciEnergy.Blazor.Server.Controllers
 {

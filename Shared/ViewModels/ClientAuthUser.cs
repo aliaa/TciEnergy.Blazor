@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using TciEnergy.Blazor.Shared.Models;
 
-namespace TciEnergy.Blazor.Shared.Models
+namespace TciEnergy.Blazor.Shared.ViewModels
 {
     public class ClientAuthUser : BaseAuthUser
     {

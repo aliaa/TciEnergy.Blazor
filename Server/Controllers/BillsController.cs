@@ -6,6 +6,7 @@ using TciEnergy.Blazor.Shared.Models;
 using MongoDB.Driver;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
+using TciEnergy.Blazor.Shared.ViewModels;
 
 namespace TciEnergy.Blazor.Server.Controllers
 {

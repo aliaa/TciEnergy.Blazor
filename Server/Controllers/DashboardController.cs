@@ -6,6 +6,7 @@ using TciCommon.Server;
 using System.Collections.Generic;
 using MongoDB.Driver;
 using System.Linq;
+using TciEnergy.Blazor.Shared.ViewModels;
 
 namespace TciEnergy.Blazor.Server.Controllers
 {

@@ -1,5 +1,4 @@
-﻿
-namespace TciEnergy.Blazor.Shared.ViewModels
+﻿namespace TciEnergy.Blazor.Shared.ViewModels
 {
     public class SubscriberReportRequest
     {
