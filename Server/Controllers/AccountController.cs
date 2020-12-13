@@ -94,7 +94,7 @@ namespace TciEnergy.Blazor.Server.Controllers
                         return BadRequest("رمز جدید و تکرار آن باهم برابر نیستند.");
                 }
                 else
-                    return BadRequest("رمز فعلی اشتباه میباشد.");
+                    return BadRequest("رمز فعلی اشتباه می‌باشد.");
             }
             return Unauthorized();
         }

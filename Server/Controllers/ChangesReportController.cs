@@ -17,7 +17,6 @@ namespace TciEnergy.Blazor.Server.Controllers
     [ApiController]
     public class ChangesReportController : BaseController
     {
-
         public ChangesReportController(ProvinceDBs dbs) : base(dbs) { }
 
         record BillValue(string Id, int SubsNum, string CityId, float Value);
