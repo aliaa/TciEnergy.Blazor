@@ -4,6 +4,7 @@
 
 @inject HttpClientX http
 @inject IToastService toast
+@inject NavigationManager nav
 
 <div class="container">
     @if (!DisableMode)
@@ -41,10 +42,11 @@
                             <div class="form-group">
                                 <Label For="() => model.City" />
                                 <select @bind="model.City" class="form-control" @attributes="inputAttributes">
+                                    <option selected disabled>انتخاب کنید...</option>
                                     @foreach (var city in cities)
-                                        {
+                                    {
                                         <option value="@city.Id.ToString()">@city.Name</option>
-                                        }
+                                    }
                                 </select>
                             </div>
                         }
@@ -158,6 +160,9 @@
                 </div>
             </div>
         </div>
+        <div class="mt-5">
+            <ValidationSummary />
+        </div>
         @if (!DisableMode)
         {
             <div class="mt-5">
@@ -197,6 +202,9 @@
         {
             var msg = await http.PostAsJsonAsync("Subscriber/Save", model);
             toast.ShowSuccess(await msg.Content.ReadAsStringAsync());
+            model = new Subscriber();
+            nav.NavigateTo("/subscribers/new");
+
         }
         catch (Exception ex)
         {
