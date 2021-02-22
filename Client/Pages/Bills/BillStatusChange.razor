@@ -63,6 +63,6 @@
         if (!res.IsSuccessStatusCode)
             toast.ShowError("خطا در تغییر وضعیت پرداخت!");
 
-        await modal.Close(ModalResult.Ok(res.IsSuccessStatusCode));
+        await modal.CloseAsync(ModalResult.Ok(res.IsSuccessStatusCode));
     }
 }

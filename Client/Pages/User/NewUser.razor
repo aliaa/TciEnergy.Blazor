@@ -57,7 +57,7 @@
             return;
         }
         if (modal != null)
-            await modal.Close(ModalResult.Ok(user));
+            await modal.CloseAsync(ModalResult.Ok(user));
         toast.ShowSuccess("کاربر جدید ذخیره شد.");
         await OnSubmitted.InvokeAsync(user);
     }
